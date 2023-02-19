@@ -13,6 +13,7 @@
 		860C8220299FD25300A67C14 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 860C821F299FD25300A67C14 /* Assets.xcassets */; };
 		860C8223299FD25300A67C14 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 860C8221299FD25300A67C14 /* LaunchScreen.storyboard */; };
 		860C822B299FD44400A67C14 /* NetShoppingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 860C822A299FD44400A67C14 /* NetShoppingTableViewCell.swift */; };
+		8750999829A22B84001D8FBE /* SpacerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8750999729A22B84001D8FBE /* SpacerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		860C8222299FD25300A67C14 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		860C8224299FD25300A67C14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		860C822A299FD44400A67C14 /* NetShoppingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetShoppingTableViewCell.swift; sourceTree = "<group>"; };
+		8750999729A22B84001D8FBE /* SpacerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpacerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +81,7 @@
 		860C822D299FD58C00A67C14 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				8750999629A22B59001D8FBE /* Components */,
 				860C822A299FD44400A67C14 /* NetShoppingTableViewCell.swift */,
 				860C821A299FD25200A67C14 /* NetShoppingViewController.swift */,
 			);
@@ -97,6 +100,14 @@
 			children = (
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		8750999629A22B59001D8FBE /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				8750999729A22B84001D8FBE /* SpacerView.swift */,
+			);
+			path = Components;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -172,6 +183,7 @@
 				860C821B299FD25200A67C14 /* NetShoppingViewController.swift in Sources */,
 				860C822B299FD44400A67C14 /* NetShoppingTableViewCell.swift in Sources */,
 				860C8217299FD25200A67C14 /* AppDelegate.swift in Sources */,
+				8750999829A22B84001D8FBE /* SpacerView.swift in Sources */,
 				860C8219299FD25200A67C14 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

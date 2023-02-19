@@ -60,48 +60,38 @@ class NetShoppingTableViewCell: UITableViewCell {
         return label
     }()
 
-    private let stackView1: UIStackView = {
+    private let containerHorizontalStackView: UIStackView = {
         let view = UIStackView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.distribution = .fill
-        view.alignment = .fill
+        view.alignment = .top
         view.axis = .horizontal
-//        view.spacing = 10.0
-//        view.backgroundColor = .blue
         return view
-    }() // large
-    
-    private let stackView2: UIStackView = {
-        let view = UIStackView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.distribution = .fill
-        view.alignment = .fill
-        view.axis = .vertical
-//        view.spacing = 10.0
-//        view.backgroundColor = .yellow
-        return view
-    }() // medium
-    
-    private let stackView3: UIStackView = {
-        let view = UIStackView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.distribution = .fill
-        view.alignment = .fill
-        view.axis = .horizontal
-//        view.spacing = 10.0
-//        view.backgroundColor = .brown
-        return view
-    }() // small1
-    
-    private let stackView4: UIStackView = {
-        let view = UIStackView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.distribution = .fill
-        view.alignment = .fill
-//        view.spacing = 10.0
-//        view.backgroundColor = .cyan
-        return view
-    }() // small2
+    }()
+
+    private let detailAreaVerticalStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.distribution = .fill
+        stackView.alignment = .fill
+        return stackView
+    }()
+
+    private let valuationHorizontalStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.distribution = .fill
+        stackView.alignment = .center
+        return stackView
+    }()
+
+    private let priceHorizontalStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.distribution = .fill
+        stackView.alignment = .center
+        return stackView
+    }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -117,28 +107,34 @@ class NetShoppingTableViewCell: UITableViewCell {
     }
     
     func setup() {
-        self.contentView.addSubview(stackView1)
-        stackView4.addArrangedSubview(priceLabel)
-        stackView4.addArrangedSubview(favoriteButton)
-        stackView3.addArrangedSubview(valuationImageView)
-        stackView3.addArrangedSubview(valuationLabel)
-        stackView2.addArrangedSubview(titleLabel)
-        stackView2.addArrangedSubview(stackView3)
-        stackView2.addArrangedSubview(stackView4)
-        stackView1.addArrangedSubview(productImageView)
-        stackView1.addArrangedSubview(stackView2)
+        self.contentView.addSubview(containerHorizontalStackView)
+
+        containerHorizontalStackView.addArrangedSubview(productImageView)
+        containerHorizontalStackView.addArrangedSubview(SpacerView(type: .width(6))) // imageと商品詳細エリアの距離
+        containerHorizontalStackView.addArrangedSubview(detailAreaVerticalStackView)
+        containerHorizontalStackView.addArrangedSubview(SpacerView(type: .width(6))) // 全体のstackViewの左端と商品詳細エリアの左端の距離
+
+        detailAreaVerticalStackView.addArrangedSubview(SpacerView(type: .height(16))) // titleLabelとtopの距離
+        detailAreaVerticalStackView.addArrangedSubview(titleLabel)
+        detailAreaVerticalStackView.addArrangedSubview(SpacerView(type: .height(16))) // titleLabelと評価の距離
+        detailAreaVerticalStackView.addArrangedSubview(valuationHorizontalStackView)
+        detailAreaVerticalStackView.addArrangedSubview(SpacerView(type: .height(6))) // 評価と値段の距離
+        detailAreaVerticalStackView.addArrangedSubview(priceHorizontalStackView)
+
+        valuationHorizontalStackView.addArrangedSubview(valuationImageView)
+        valuationHorizontalStackView.addArrangedSubview(valuationLabel)
+        valuationHorizontalStackView.addArrangedSubview(SpacerView(type: .noConstraint))
+
+        priceHorizontalStackView.addArrangedSubview(priceLabel)
+        priceHorizontalStackView.addArrangedSubview(favoriteButton)
+
         NSLayoutConstraint.activate([
-            stackView1.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 5),
-            stackView1.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -5),
-            stackView1.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 5),
-            stackView1.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -5),
+            containerHorizontalStackView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 5),
+            containerHorizontalStackView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -5),
+            containerHorizontalStackView.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 5),
+            containerHorizontalStackView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -5),
             productImageView.widthAnchor.constraint(equalToConstant: 150),
             productImageView.heightAnchor.constraint(equalToConstant: 150),
-            stackView2.leadingAnchor.constraint(equalTo: productImageView.trailingAnchor, constant: 5),
-            stackView2.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -5),
-            titleLabel.heightAnchor.constraint(equalTo: stackView1.heightAnchor, multiplier: 0.5),
-            stackView3.heightAnchor.constraint(equalTo: stackView1.heightAnchor, multiplier: 0.2),
-            valuationLabel.widthAnchor.constraint(equalToConstant: 30),
             valuationImageView.widthAnchor.constraint(equalToConstant: 20),
             favoriteButton.widthAnchor.constraint(equalToConstant: 40)
         ])
