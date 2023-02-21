@@ -7,8 +7,8 @@
 
 import UIKit
 
-class NetShoppingTableViewCell: UITableViewCell {
-    private lazy var productImageView: UIImageView = {
+final class NetShoppingTableViewCell: UITableViewCell {
+    private let productImageView: UIImageView = {
         let view = UIImageView()
         view.image = UIImage(systemName: "applelogo")
         view.contentMode = .scaleAspectFit
@@ -16,15 +16,15 @@ class NetShoppingTableViewCell: UITableViewCell {
         return view
     }()
     
-    private lazy var titleLabel: UILabel = {
+    private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "テストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテスト"
-        label.numberOfLines = 2
+        label.numberOfLines = 3
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    private lazy var favoriteButton: UIButton = {
+    private let favoriteButton: UIButton = {
         let button = UIButton(type: .custom)
         button.imageView?.contentMode = .scaleAspectFit
         button.setImage(UIImage(systemName: "bookmark"), for: .normal)
@@ -34,7 +34,7 @@ class NetShoppingTableViewCell: UITableViewCell {
         return button
     }()
     
-    private lazy var priceLabel: UILabel = {
+    private let priceLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont(name: "Helvetica", size: 23.0)
         label.text = "￥100,000"
@@ -43,7 +43,7 @@ class NetShoppingTableViewCell: UITableViewCell {
         return label
     }()
     
-    private lazy var valuationImageView: UIImageView = {
+    private let valuationImageView: UIImageView = {
         let view = UIImageView()
         view.image = UIImage(systemName: "star.fill")
         view.contentMode = .scaleAspectFit
@@ -53,13 +53,14 @@ class NetShoppingTableViewCell: UITableViewCell {
         return view
     }()
     
-    private lazy var valuationLabel: UILabel = {
+    private let valuationLabel: UILabel = {
         let label = UILabel()
         label.text = "3.8"
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
 
+    // 全体のstackView
     private let containerHorizontalStackView: UIStackView = {
         let view = UIStackView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -69,6 +70,7 @@ class NetShoppingTableViewCell: UITableViewCell {
         return view
     }()
 
+    // 商品詳細エリア
     private let detailAreaVerticalStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -77,6 +79,7 @@ class NetShoppingTableViewCell: UITableViewCell {
         return stackView
     }()
 
+    // 評価を表示するエリア
     private let valuationHorizontalStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -85,6 +88,7 @@ class NetShoppingTableViewCell: UITableViewCell {
         return stackView
     }()
 
+    // 金額とお気に入りボタンを表示するエリア
     private let priceHorizontalStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -129,10 +133,10 @@ class NetShoppingTableViewCell: UITableViewCell {
         priceHorizontalStackView.addArrangedSubview(favoriteButton)
 
         NSLayoutConstraint.activate([
-            containerHorizontalStackView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 5),
-            containerHorizontalStackView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -5),
-            containerHorizontalStackView.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 5),
-            containerHorizontalStackView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -5),
+            containerHorizontalStackView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 4),
+            containerHorizontalStackView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -4),
+            containerHorizontalStackView.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 4),
+            containerHorizontalStackView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -4),
             productImageView.widthAnchor.constraint(equalToConstant: 150),
             productImageView.heightAnchor.constraint(equalToConstant: 150),
             valuationImageView.widthAnchor.constraint(equalToConstant: 20),

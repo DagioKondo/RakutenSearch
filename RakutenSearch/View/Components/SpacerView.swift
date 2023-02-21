@@ -14,7 +14,6 @@ enum SpacerViewConstraintType {
 }
 
 final class SpacerView: UIView {
-
     init(type: SpacerViewConstraintType) {
         super.init(frame: .zero)
         setConstraint(type: type)

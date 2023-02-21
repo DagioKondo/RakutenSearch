@@ -7,20 +7,17 @@
 
 import UIKit
 
-class NetShoppingViewController: UIViewController {
-    private lazy var netShoppingTableView: UITableView = {
-        let view = UITableView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height))
-        view.delegate = self
-        view.dataSource = self
+final class NetShoppingViewController: UIViewController {
+    private let netShoppingTableView: UITableView = {
+        let view = UITableView()
         view.register(NetShoppingTableViewCell.self, forCellReuseIdentifier: "NetShoppingCell")
+        view.estimatedRowHeight = 100
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
-    private lazy var searchBar: UISearchBar = {
-        let navigationBarFrame = self.navigationController?.navigationBar.bounds
-        let searchBar = UISearchBar(frame: navigationBarFrame!)
-        searchBar.delegate = self
+    private let searchBar: UISearchBar = {
+        let searchBar = UISearchBar()
         searchBar.placeholder = "商品を検索"
         searchBar.autocapitalizationType = UITextAutocapitalizationType.none
         searchBar.searchTextField.backgroundColor = .white
@@ -33,20 +30,34 @@ class NetShoppingViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.titleView = searchBar
-        navigationItem.titleView?.frame = searchBar.frame
+        setTableView()
+        setupSearchBar()
+    }
+    
+    private func setTableView() {
         view.addSubview(netShoppingTableView)
+        netShoppingTableView.delegate = self
+        netShoppingTableView.dataSource = self
+        NSLayoutConstraint.activate([
+            netShoppingTableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            netShoppingTableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            netShoppingTableView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            netShoppingTableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+        ])
+    }
+    
+    private func setupSearchBar() {
+        navigationItem.titleView = searchBar
+        if let navigationBarFrame = self.navigationController?.navigationBar.bounds {
+            searchBar.frame = navigationBarFrame
+            searchBar.delegate = self
+        }
     }
 }
 
 extension NetShoppingViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 2
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        netShoppingTableView.estimatedRowHeight = 100
-        return UITableView.automaticDimension
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
