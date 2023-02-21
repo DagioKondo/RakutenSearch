@@ -8,7 +8,7 @@
 import UIKit
 
 final class NetShoppingViewController: UIViewController {
-    private let netShoppingTableView: UITableView = {
+    private let tableView: UITableView = {
         let view = UITableView()
         view.register(NetShoppingTableViewCell.self, forCellReuseIdentifier: "NetShoppingCell")
         view.estimatedRowHeight = 100
@@ -35,14 +35,14 @@ final class NetShoppingViewController: UIViewController {
     }
     
     private func setTableView() {
-        view.addSubview(netShoppingTableView)
-        netShoppingTableView.delegate = self
-        netShoppingTableView.dataSource = self
+        view.addSubview(tableView)
+        tableView.delegate = self
+        tableView.dataSource = self
         NSLayoutConstraint.activate([
-            netShoppingTableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-            netShoppingTableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-            netShoppingTableView.topAnchor.constraint(equalTo: self.view.topAnchor),
-            netShoppingTableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+            tableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            tableView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
         ])
     }
     
