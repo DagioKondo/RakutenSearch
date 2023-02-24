@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 final class NetShoppingViewController: UIViewController {
     private let tableView: UITableView = {
@@ -28,10 +29,14 @@ final class NetShoppingViewController: UIViewController {
         return searchBar
     }()
     
+    private let viewModel: NetShoppingViewModelable = NetShoppingViewModel()
+    private var subscriptions = Set<AnyCancellable>()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setTableView()
-        setupSearchBar()
+        setSearchBar()
+        setViewModel()
     }
     
     private func setTableView() {
@@ -46,12 +51,21 @@ final class NetShoppingViewController: UIViewController {
         ])
     }
     
-    private func setupSearchBar() {
+    private func setSearchBar() {
         navigationItem.titleView = searchBar
         if let navigationBarFrame = self.navigationController?.navigationBar.bounds {
             searchBar.frame = navigationBarFrame
             searchBar.delegate = self
         }
+    }
+    
+    private func setViewModel() {
+        viewModel.showWebViewPublisher
+            .sink { [weak self] in
+                let webViewController = WebViewController($0)
+                self!.present(webViewController, animated: true, completion: nil)
+            }
+            .store(in: &subscriptions)
     }
 }
 
@@ -66,6 +80,7 @@ extension NetShoppingViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        viewModel.handleDidSelectRowAt(indexPath)
     }
 }
 

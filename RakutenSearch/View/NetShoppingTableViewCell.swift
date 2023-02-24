@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 final class NetShoppingTableViewCell: UITableViewCell {
     private let productImageView: UIImageView = {
