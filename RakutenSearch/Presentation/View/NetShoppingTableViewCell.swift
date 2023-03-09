@@ -10,7 +10,6 @@ import UIKit
 final class NetShoppingTableViewCell: UITableViewCell {
     private let productImageView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(systemName: "applelogo")
         view.contentMode = .scaleAspectFit
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -18,7 +17,6 @@ final class NetShoppingTableViewCell: UITableViewCell {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "テストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテスト"
         label.numberOfLines = 3
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -37,7 +35,6 @@ final class NetShoppingTableViewCell: UITableViewCell {
     private let priceLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont(name: "Helvetica", size: 23.0)
-        label.text = "￥100,000"
         label.textColor = .red
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -55,7 +52,6 @@ final class NetShoppingTableViewCell: UITableViewCell {
     
     private let valuationLabel: UILabel = {
         let label = UILabel()
-        label.text = "3.8"
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -110,7 +106,7 @@ final class NetShoppingTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
     }
     
-    func setup() {
+    private func setup() {
         self.contentView.addSubview(containerHorizontalStackView)
 
         containerHorizontalStackView.addArrangedSubview(productImageView)
@@ -142,5 +138,17 @@ final class NetShoppingTableViewCell: UITableViewCell {
             valuationImageView.widthAnchor.constraint(equalToConstant: 20),
             favoriteButton.widthAnchor.constraint(equalToConstant: 40)
         ])
+    }
+    
+    func render(product: Product) {
+        guard let itemName = product.Item?.itemName else { return }
+        guard let itemPrice = product.Item?.itemPrice else { return }
+        guard let mediumImageUrls = product.Item?.mediumImageUrls else { return }
+        guard let imageUrl = mediumImageUrls[0].imageUrl else { return }
+        guard let itemReviewAverage = product.Item?.reviewAverage else { return }
+        titleLabel.text = itemName
+        priceLabel.text = "￥" + String(itemPrice)
+        productImageView.image = UIImage.getImageByUrl(url: imageUrl)
+        valuationLabel.text = String(itemReviewAverage)
     }
 }
