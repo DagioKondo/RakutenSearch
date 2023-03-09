@@ -36,7 +36,7 @@ final class NetShoppingViewController: UIViewController {
         super.viewDidLoad()
         setTableView()
         setSearchBar()
-        setViewModel()
+        bindUI()
     }
     
     private func setTableView() {
@@ -59,11 +59,11 @@ final class NetShoppingViewController: UIViewController {
         }
     }
     
-    private func setViewModel() {
+    private func bindUI() {
         viewModel.showWebViewPublisher
             .sink { [weak self] in
                 let webViewController = WebViewController($0)
-                self!.present(webViewController, animated: true, completion: nil)
+                self?.present(webViewController, animated: true, completion: nil)
             }
             .store(in: &subscriptions)
     }

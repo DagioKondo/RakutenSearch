@@ -17,7 +17,7 @@ protocol NetShoppingViewModelable {
 
 final class NetShoppingViewModel {
     private var showWebViewSubject = PassthroughSubject<URL, Never>()
-    var showWebViewPublisher: AnyPublisher<URL, Never> {
+    let showWebViewPublisher: AnyPublisher<URL, Never> {
         showWebViewSubject.eraseToAnyPublisher()
     }
 }
@@ -30,7 +30,7 @@ extension NetShoppingViewModel: NetShoppingViewModelable {
     func handleDidSelectRowAt(_ indexPath: IndexPath) {
 //        let item = listSubject.value[indexPath.row]
 //        guard let url = URL(string: item.htmlUrl) else { return }
-        guard let url = URL(string: "https://www.google.com/?hl=ja") else {return} // ダミーURL
+        guard let url = URL(string: "https://www.google.com/?hl=ja") else { return } // ダミーURL
         showWebViewSubject.send(url)
     }
 }
