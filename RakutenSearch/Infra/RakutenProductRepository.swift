@@ -8,12 +8,21 @@
 import Foundation
 import Network
 
-// これなんで構造体なの？
+// 楽天市場APIから商品を取得するリポジトリ実装クラス
 struct RakutenProductRepository: ProductRepository {
-    let apiClient = APIClient<Products>()
+    private let apiClient = RakutenAPIClient()
     
+    // 楽天市場APIから商品検索
     func fetchProduct(query: String) async throws -> Products {
-        let products = try await apiClient.fetch(query: query)
+//        httpリクエスト作成
+        let urlQueryItems = [
+            URLQueryItem(name: "format", value: "json"),
+            URLQueryItem(name: "applicationId", value: "1072027207911802205"),
+            URLQueryItem(name: "keyword", value: query),
+            // 付け足すかも
+        ]
+        let rakutenProductAPIRequest: RakutenAPIRequest<Products> = RakutenAPIRequest(path: RakutenAPIUrl.rakutenProductSearchAPI.rawValue, method: .get, queryItems: urlQueryItems)
+        let products = try await apiClient.fetch(request: rakutenProductAPIRequest)
         return products
     }
 }

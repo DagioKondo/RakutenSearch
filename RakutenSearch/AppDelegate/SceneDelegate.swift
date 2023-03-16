@@ -37,7 +37,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
         monitor.pathUpdateHandler = { path in
-                    NetworkStatus.status = path.status
+            RakutenAPIClient.networkStatus = path.status
                 }
     }
     

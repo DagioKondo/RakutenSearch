@@ -141,11 +141,10 @@ final class NetShoppingTableViewCell: UITableViewCell {
     }
     
     func render(product: Product) {
-        guard let itemName = product.Item?.itemName else { return }
-        guard let itemPrice = product.Item?.itemPrice else { return }
-        guard let mediumImageUrls = product.Item?.mediumImageUrls else { return }
-        guard let imageUrl = mediumImageUrls[0].imageUrl else { return }
-        guard let itemReviewAverage = product.Item?.reviewAverage else { return }
+        let itemName = product.item.name
+        let itemPrice = product.item.price
+        let imageUrl = product.item.imageUrls[0]
+        let itemReviewAverage = product.item.reviewAverage
         titleLabel.text = itemName
         priceLabel.text = "￥" + String(itemPrice)
         productImageView.image = UIImage.getImageByUrl(url: imageUrl)

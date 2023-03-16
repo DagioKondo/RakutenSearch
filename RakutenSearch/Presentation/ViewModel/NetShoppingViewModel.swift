@@ -50,16 +50,16 @@ extension NetShoppingViewModel: NetShoppingViewModelable {
     func fetch(query: String?) async {
         do {
             guard let query = query else { return }
-            async let list = productRepository.fetchProduct(query: query).Items
-            self.setupList(try await list!)
-        } catch let error {
-            guard let error = error as? APIError else { return }
+            async let list = productRepository.fetchProduct(query: query).items
+            self.setupList(try await list)
+        } catch {
+            guard let error = error as? RakutenAPIError else { return }
             print(error) // アラート出す予定
         }
     }
     
     func handleDidSelectRowAt(_ indexPath: IndexPath) {
-        guard let itemUrl = products[indexPath.row].Item?.itemUrl else { return }
+        let itemUrl = products[indexPath.row].item.urlString
         guard let url = URL(string: itemUrl) else { return }
         showWebViewSubject.send(url)
     }

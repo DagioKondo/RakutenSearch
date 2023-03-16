@@ -18,10 +18,10 @@
 		86DE794629B0ECCD00D47DCF /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE794529B0ECCD00D47DCF /* Product.swift */; };
 		86DE794D29B4750500D47DCF /* RakutenProductRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE794C29B4750500D47DCF /* RakutenProductRepository.swift */; };
 		86DE794F29B477FF00D47DCF /* ProductRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE794E29B477FF00D47DCF /* ProductRepository.swift */; };
-		86DE795129B493D200D47DCF /* APIUrl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE795029B493D200D47DCF /* APIUrl.swift */; };
-		86DE795329B4C9FB00D47DCF /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE795229B4C9FB00D47DCF /* APIError.swift */; };
+		86DE795329B4C9FB00D47DCF /* RakutenAPIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE795229B4C9FB00D47DCF /* RakutenAPIError.swift */; };
 		86DE795629B9FDC400D47DCF /* UIImageView+Addition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE795529B9FDC400D47DCF /* UIImageView+Addition.swift */; };
-		86DE795829BA0C0B00D47DCF /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE795729BA0C0B00D47DCF /* APIClient.swift */; };
+		86DE795829BA0C0B00D47DCF /* RakutenAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE795729BA0C0B00D47DCF /* RakutenAPIClient.swift */; };
+		86DE795A29BF94C100D47DCF /* RakutenAPIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE795929BF94C100D47DCF /* RakutenAPIRequest.swift */; };
 		8750999829A22B84001D8FBE /* SpacerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8750999729A22B84001D8FBE /* SpacerView.swift */; };
 /* End PBXBuildFile section */
 
@@ -39,10 +39,10 @@
 		86DE794529B0ECCD00D47DCF /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
 		86DE794C29B4750500D47DCF /* RakutenProductRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RakutenProductRepository.swift; sourceTree = "<group>"; };
 		86DE794E29B477FF00D47DCF /* ProductRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductRepository.swift; sourceTree = "<group>"; };
-		86DE795029B493D200D47DCF /* APIUrl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIUrl.swift; sourceTree = "<group>"; };
-		86DE795229B4C9FB00D47DCF /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
+		86DE795229B4C9FB00D47DCF /* RakutenAPIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RakutenAPIError.swift; sourceTree = "<group>"; };
 		86DE795529B9FDC400D47DCF /* UIImageView+Addition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Addition.swift"; sourceTree = "<group>"; };
-		86DE795729BA0C0B00D47DCF /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		86DE795729BA0C0B00D47DCF /* RakutenAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RakutenAPIClient.swift; sourceTree = "<group>"; };
+		86DE795929BF94C100D47DCF /* RakutenAPIRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RakutenAPIRequest.swift; sourceTree = "<group>"; };
 		8750999729A22B84001D8FBE /* SpacerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpacerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -154,9 +154,9 @@
 			isa = PBXGroup;
 			children = (
 				86DE794C29B4750500D47DCF /* RakutenProductRepository.swift */,
-				86DE795029B493D200D47DCF /* APIUrl.swift */,
-				86DE795229B4C9FB00D47DCF /* APIError.swift */,
-				86DE795729BA0C0B00D47DCF /* APIClient.swift */,
+				86DE795229B4C9FB00D47DCF /* RakutenAPIError.swift */,
+				86DE795729BA0C0B00D47DCF /* RakutenAPIClient.swift */,
+				86DE795929BF94C100D47DCF /* RakutenAPIRequest.swift */,
 			);
 			path = Infra;
 			sourceTree = "<group>";
@@ -247,8 +247,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				86DE795129B493D200D47DCF /* APIUrl.swift in Sources */,
-				86DE795829BA0C0B00D47DCF /* APIClient.swift in Sources */,
+				86DE795A29BF94C100D47DCF /* RakutenAPIRequest.swift in Sources */,
+				86DE795829BA0C0B00D47DCF /* RakutenAPIClient.swift in Sources */,
 				860C821B299FD25200A67C14 /* NetShoppingViewController.swift in Sources */,
 				860C822B299FD44400A67C14 /* NetShoppingTableViewCell.swift in Sources */,
 				860C8217299FD25200A67C14 /* AppDelegate.swift in Sources */,
@@ -260,7 +260,7 @@
 				860C8219299FD25200A67C14 /* SceneDelegate.swift in Sources */,
 				86DE794D29B4750500D47DCF /* RakutenProductRepository.swift in Sources */,
 				86DE794F29B477FF00D47DCF /* ProductRepository.swift in Sources */,
-				86DE795329B4C9FB00D47DCF /* APIError.swift in Sources */,
+				86DE795329B4C9FB00D47DCF /* RakutenAPIError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
