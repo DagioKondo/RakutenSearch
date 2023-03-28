@@ -19,6 +19,7 @@ struct RakutenProductRepository: ProductRepository {
 //            URLQueryItem(name: "format", value: "json"),
 //            URLQueryItem(name: "applicationId", value: "1072027207911802205"),
             URLQueryItem(name: "keyword", value: query),
+            
             // 付け足すかも
         ]
         let rakutenProductAPIRequest: RakutenAPIRequest<Products> = try RakutenAPIRequest(path: RakutenAPIUrl.rakutenProductSearchAPI.rawValue, method: .get, queryItems: urlQueryItems)

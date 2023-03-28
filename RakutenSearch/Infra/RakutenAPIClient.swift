@@ -21,6 +21,8 @@ final class RakutenAPIClient: RakutenAPIClientable {
         }
         let (data, response) = try await URLSession.shared.data(for: request.buildURLRequest())
         try responseErrorHandling(response: response as! HTTPURLResponse)
+        print("RakutenAPIClient.fetch")
+        print(try JSONDecoder().decode(Request.Response.self, from: data))
         return try JSONDecoder().decode(Request.Response.self, from: data)
     }
     

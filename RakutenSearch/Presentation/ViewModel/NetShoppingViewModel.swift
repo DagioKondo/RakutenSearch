@@ -12,14 +12,16 @@ import Combine
 protocol NetShoppingViewModelable {
     var showWebViewPublisher: AnyPublisher<URL, Never> { get }
     var onSearchButtonClickedPublisher: AnyPublisher<Void, Never> { get }
+    var isLoadingPublisher: AnyPublisher<Bool, Never> { get }
     var products:[Product] { get }
     func fetch(query: String?) async
     func handleDidSelectRowAt(_ indexPath: IndexPath)
 }
 
 final class NetShoppingViewModel {
-    private var showWebViewSubject = PassthroughSubject<URL, Never>()
-    private var onSearchButtonClickedSubject = PassthroughSubject<Void, Never>()
+    private let showWebViewSubject = PassthroughSubject<URL, Never>()
+    private let onSearchButtonClickedSubject = PassthroughSubject<Void, Never>()
+    private let isLoadingSubject = PassthroughSubject<Bool, Never>()
     var products:[Product] = []
     
     var showWebViewPublisher: AnyPublisher<URL, Never> {
@@ -28,6 +30,10 @@ final class NetShoppingViewModel {
     
     var onSearchButtonClickedPublisher: AnyPublisher<Void, Never> {
         return onSearchButtonClickedSubject.eraseToAnyPublisher()
+    }
+    
+    var isLoadingPublisher: AnyPublisher<Bool, Never> {
+        return isLoadingSubject.eraseToAnyPublisher()
     }
     
     private let productRepository: ProductRepository
@@ -43,15 +49,17 @@ final class NetShoppingViewModel {
     private func setupList(_ list: [Product]) {
         products = list
         onSearchButtonClickedSubject.send()
+        isLoadingSubject.send(false)
     }
 }
 
 extension NetShoppingViewModel: NetShoppingViewModelable {
     func fetch(query: String?) async {
         do {
+            isLoadingSubject.send(true)
             guard let query = query else { return }
             async let list = productRepository.fetchProduct(query: query).items
-            self.setupList(try await list)
+            setupList(try await list)
         } catch {
             guard let error = error as? RakutenAPIError else { return }
             print(error) // アラート出す予定

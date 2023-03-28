@@ -29,6 +29,17 @@ final class NetShoppingViewController: UIViewController {
         return searchBar
     }()
     
+    private let indicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView()
+        indicator.hidesWhenStopped = true
+        indicator.isHidden = true
+        indicator.style = .large
+        indicator.color = UIColor.systemMint
+        indicator.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.2)
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        return indicator
+    }()
+    
     private let viewModel: NetShoppingViewModelable = NetShoppingViewModel()
     private var subscriptions = Set<AnyCancellable>()
     
@@ -36,6 +47,7 @@ final class NetShoppingViewController: UIViewController {
         super.viewDidLoad()
         setTableView()
         setSearchBar()
+        setIndicator()
         bindUI()
     }
     
@@ -59,6 +71,20 @@ final class NetShoppingViewController: UIViewController {
         }
     }
     
+    private func setIndicator() {
+        view.addSubview(indicator)
+        NSLayoutConstraint.activate([
+            indicator.centerYAnchor.constraint(equalTo: self.tableView.centerYAnchor),
+            indicator.centerXAnchor.constraint(equalTo: self.tableView.centerXAnchor),
+//            indicator.widthAnchor.constraint(equalToConstant: 64),
+//            indicator.heightAnchor.constraint(equalToConstant: 64)
+            indicator.leadingAnchor.constraint(equalTo: self.tableView.leadingAnchor),
+            indicator.trailingAnchor.constraint(equalTo: self.tableView.trailingAnchor),
+            indicator.topAnchor.constraint(equalTo: self.tableView.topAnchor),
+            indicator.bottomAnchor.constraint(equalTo: self.tableView.bottomAnchor)
+        ])
+    }
+    
     private func bindUI() {
         viewModel.showWebViewPublisher
             .sink { [weak self] in
@@ -67,9 +93,19 @@ final class NetShoppingViewController: UIViewController {
             }
             .store(in: &subscriptions)
         viewModel.onSearchButtonClickedPublisher
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] in
-                self!.tableView.reloadData()
+                self?.tableView.reloadData()
+            }
+            .store(in: &subscriptions)
+        viewModel.isLoadingPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in
+                self?.view.bringSubviewToFront(self!.indicator)
+                $0
+                ? self?.indicator.startAnimating()
+                : self?.indicator.stopAnimating()
+                self?.indicator.isHidden = !$0
             }
             .store(in: &subscriptions)
     }
