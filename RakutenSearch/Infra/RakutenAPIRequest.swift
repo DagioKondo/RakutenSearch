@@ -58,10 +58,13 @@ struct RakutenAPIRequest<ResponseDataType: Codable>: RakutenAPIBaseRequest {
 //    var body: String = ""
     var queryItems: [URLQueryItem]
 
-    init(path: String, method: HTTPMethod, queryItems: [URLQueryItem]) {
-        self.baseURL = URL(string: self.baseURLString)!
+    init (path: String, method: HTTPMethod, queryItems: [URLQueryItem]) throws {
+        guard let url = URL(string: self.baseURLString) else { throw RakutenAPIError.unknownError }
+        self.baseURL = url
         self.path += "\(path)"
         self.method = method
         self.queryItems = queryItems
+        self.queryItems.append(URLQueryItem(name: "format", value: "json"))
+        self.queryItems.append(URLQueryItem(name: "applicationId", value: "1072027207911802205"))
     }
 }

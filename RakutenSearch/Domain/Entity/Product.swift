@@ -55,6 +55,7 @@ extension ProductInfo {
             imageUrls.append(imageUrl)
         }
         self.imageUrls = imageUrls
+        // 楽天APIはキーが見つからない場合がないのでdecodeIfPresentは使わない
         self.urlString = try rootContainer.decode(String.self, forKey: .urlString)
         self.name = try rootContainer.decode(String.self, forKey: .name)
         self.price = try rootContainer.decode(Int.self, forKey: .price)
