@@ -66,16 +66,23 @@ final class NetShoppingViewController: UIViewController {
                 self?.present(webViewController, animated: true, completion: nil)
             }
             .store(in: &subscriptions)
+        viewModel.onSearchButtonClickedPublisher
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in
+                self!.tableView.reloadData()
+            }
+            .store(in: &subscriptions)
     }
 }
 
 extension NetShoppingViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        return viewModel.products.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "NetShoppingCell", for: indexPath) as! NetShoppingTableViewCell
+        cell.render(product: viewModel.products[indexPath.row])
         return cell
     }
     
@@ -98,5 +105,6 @@ extension NetShoppingViewController: UISearchBarDelegate {
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        Task { await viewModel.fetch(query: searchBar.text) }
     }
 }
