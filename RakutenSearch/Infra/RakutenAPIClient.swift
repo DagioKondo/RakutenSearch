@@ -20,13 +20,13 @@ final class RakutenAPIClient: RakutenAPIClientable {
             throw RakutenAPIError.networkError
         }
         let (data, response) = try await URLSession.shared.data(for: request.buildURLRequest())
-        try responseErrorHandling(response: response as! HTTPURLResponse)
+        try handleResponseError(response: response as! HTTPURLResponse)
         print("RakutenAPIClient.fetch")
         print(try JSONDecoder().decode(Request.Response.self, from: data))
         return try JSONDecoder().decode(Request.Response.self, from: data)
     }
     
-    private func responseErrorHandling(response: HTTPURLResponse) throws {
+    private func handleResponseError(response: HTTPURLResponse) throws {
         guard let httpResponse = response as? HTTPURLResponse else {
             throw RakutenAPIError.unknownError
         }

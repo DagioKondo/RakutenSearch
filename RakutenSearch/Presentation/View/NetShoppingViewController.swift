@@ -43,6 +43,15 @@ final class NetShoppingViewController: UIViewController {
     private let viewModel: NetShoppingViewModelable = NetShoppingViewModel()
     private var subscriptions = Set<AnyCancellable>()
     
+    init() {
+        super.init(nibName: nil, bundle: nil)
+        
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setTableView()
@@ -76,8 +85,6 @@ final class NetShoppingViewController: UIViewController {
         NSLayoutConstraint.activate([
             indicator.centerYAnchor.constraint(equalTo: self.tableView.centerYAnchor),
             indicator.centerXAnchor.constraint(equalTo: self.tableView.centerXAnchor),
-//            indicator.widthAnchor.constraint(equalToConstant: 64),
-//            indicator.heightAnchor.constraint(equalToConstant: 64)
             indicator.leadingAnchor.constraint(equalTo: self.tableView.leadingAnchor),
             indicator.trailingAnchor.constraint(equalTo: self.tableView.trailingAnchor),
             indicator.topAnchor.constraint(equalTo: self.tableView.topAnchor),
@@ -108,6 +115,29 @@ final class NetShoppingViewController: UIViewController {
                 self?.indicator.isHidden = !$0
             }
             .store(in: &subscriptions)
+        viewModel.addToFavoritePublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in
+                $0
+                ? print("お気に入り追加しました。")
+                : print("お気に入り追加済みです。");
+                let alert = UIAlertController(title: "お気に入りに追加しました。", message: "", preferredStyle: .alert)
+                self?.present(alert, animated: true, completion: {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                        alert.dismiss(animated: true, completion: nil)
+                    }
+                })
+                self?.tableView.reloadData()
+            }
+            .store(in: &subscriptions)
+    }
+    
+    @objc func onFavoriteButtonClicked(_ sender: UIButton) {
+//        let cell = sender.superview?.superview?.superview?.superview?.superview as! UITableViewCell
+//        let indexPath = tableView.indexPath(for: cell)
+        print(sender.tag)
+        let indexPath = IndexPath(row: sender.tag, section: 0)
+        Task { await viewModel.addToFavorites(indexPath) }
     }
 }
 
@@ -118,7 +148,10 @@ extension NetShoppingViewController: UITableViewDelegate, UITableViewDataSource 
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "NetShoppingCell", for: indexPath) as! NetShoppingTableViewCell
+        cell.favoriteButton.addTarget(self, action: #selector(onFavoriteButtonClicked(_:)), for: .touchUpInside)
+        cell.favoriteButton.tag = indexPath.row
         cell.render(product: viewModel.products[indexPath.row])
+//        cell.render(viewModel: viewModel, indexPath: indexPath)
         return cell
     }
     
@@ -141,6 +174,6 @@ extension NetShoppingViewController: UISearchBarDelegate {
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        Task { await viewModel.fetch(query: searchBar.text) }
+        Task { await viewModel.handleSearchButtonClicked(query: searchBar.text) }
     }
 }

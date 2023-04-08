@@ -22,11 +22,10 @@ final class NetShoppingTableViewCell: UITableViewCell {
         return label
     }()
     
-    private let favoriteButton: UIButton = {
+    let favoriteButton: UIButton = {
         let button = UIButton(type: .custom)
         button.imageView?.contentMode = .scaleAspectFit
         button.setImage(UIImage(systemName: "bookmark"), for: .normal)
-//        button.backgroundColor = .red
         button.tintColor = .systemYellow
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -44,7 +43,6 @@ final class NetShoppingTableViewCell: UITableViewCell {
         let view = UIImageView()
         view.image = UIImage(systemName: "star.fill")
         view.contentMode = .scaleAspectFit
-//        view.backgroundColor = .black
         view.tintColor = .systemYellow
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -93,8 +91,11 @@ final class NetShoppingTableViewCell: UITableViewCell {
         return stackView
     }()
     
+    private var viewModel: NetShoppingViewModelable?
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+//        favoriteButton.addTarget(self, action: #selector(onFavoriteButtonClicked(_:)), for: .touchUpInside)
         setup()
     }
     
@@ -149,5 +150,29 @@ final class NetShoppingTableViewCell: UITableViewCell {
         priceLabel.text = "￥" + String(itemPrice)
         productImageView.image = UIImage.getImageByUrl(url: imageUrl)
         valuationLabel.text = String(itemReviewAverage)
+        favoriteButton.setImage(UIImage(systemName: product.item.favProductImage), for: .normal)
     }
+    
+    func render(viewModel: NetShoppingViewModelable, indexPath: IndexPath) {
+        self.viewModel = viewModel
+        let product = viewModel.products[indexPath.row]
+        let itemName = product.item.name
+        let itemPrice = product.item.price
+        let imageUrl = product.item.imageUrls[0]
+        let itemReviewAverage = product.item.reviewAverage
+        titleLabel.text = itemName
+        priceLabel.text = "￥" + String(itemPrice)
+        productImageView.image = UIImage.getImageByUrl(url: imageUrl)
+        valuationLabel.text = String(itemReviewAverage)
+        favoriteButton.tag = indexPath.row
+        favoriteButton.setImage(UIImage(systemName: product.item.favProductImage), for: .normal)
+    }
+    
+//    @objc func onFavoriteButtonClicked(_ sender: UIButton) {
+////        let cell = sender.superview?.superview?.superview?.superview?.superview as! UITableViewCell
+////        let indexPath = tableView.indexPath(for: cell)
+//        print(sender.tag)
+//
+//        Task { await viewModel?.addToFavorites(sender.tag) }
+//    }
 }
