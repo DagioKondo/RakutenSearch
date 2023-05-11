@@ -13,15 +13,23 @@
 		860C8220299FD25300A67C14 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 860C821F299FD25300A67C14 /* Assets.xcassets */; };
 		860C8223299FD25300A67C14 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 860C8221299FD25300A67C14 /* LaunchScreen.storyboard */; };
 		860C822B299FD44400A67C14 /* NetShoppingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 860C822A299FD44400A67C14 /* NetShoppingTableViewCell.swift */; };
+		8669F5AE29E2DFFD002B9921 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8669F5AD29E2DFFD002B9921 /* MainTabBarController.swift */; };
+		8669F5B029E2E04D002B9921 /* FavoritesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8669F5AF29E2E04D002B9921 /* FavoritesViewController.swift */; };
+		8669F5B229E82AAA002B9921 /* FavoritesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8669F5B129E82AAA002B9921 /* FavoritesViewModel.swift */; };
+		8669F5B429E98031002B9921 /* FavoritesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8669F5B329E98031002B9921 /* FavoritesTableViewCell.swift */; };
 		86DE793C29A4F6F300D47DCF /* NetShoppingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE793B29A4F6F300D47DCF /* NetShoppingViewModel.swift */; };
 		86DE793E29A4FBD100D47DCF /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE793D29A4FBD100D47DCF /* WebViewController.swift */; };
 		86DE794629B0ECCD00D47DCF /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE794529B0ECCD00D47DCF /* Product.swift */; };
 		86DE794D29B4750500D47DCF /* RakutenProductRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE794C29B4750500D47DCF /* RakutenProductRepository.swift */; };
 		86DE794F29B477FF00D47DCF /* ProductRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE794E29B477FF00D47DCF /* ProductRepository.swift */; };
 		86DE795329B4C9FB00D47DCF /* RakutenAPIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE795229B4C9FB00D47DCF /* RakutenAPIError.swift */; };
-		86DE795629B9FDC400D47DCF /* UIImageView+Addition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE795529B9FDC400D47DCF /* UIImageView+Addition.swift */; };
+		86DE795629B9FDC400D47DCF /* UIImage+Addition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE795529B9FDC400D47DCF /* UIImage+Addition.swift */; };
 		86DE795829BA0C0B00D47DCF /* RakutenAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE795729BA0C0B00D47DCF /* RakutenAPIClient.swift */; };
 		86DE795A29BF94C100D47DCF /* RakutenAPIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE795929BF94C100D47DCF /* RakutenAPIRequest.swift */; };
+		86DE795C29D331F500D47DCF /* FavoriteProductRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE795B29D331F500D47DCF /* FavoriteProductRepository.swift */; };
+		86DE795E29D332E400D47DCF /* CoreDataFavoriteProductRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE795D29D332E400D47DCF /* CoreDataFavoriteProductRepository.swift */; };
+		86DE798429D96D1300D47DCF /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 86DE798229D96D1300D47DCF /* DataModel.xcdatamodeld */; };
+		86DE798629D98FCC00D47DCF /* NSPersistentCloudKitContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE798529D98FCC00D47DCF /* NSPersistentCloudKitContainer.swift */; };
 		8750999829A22B84001D8FBE /* SpacerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8750999729A22B84001D8FBE /* SpacerView.swift */; };
 /* End PBXBuildFile section */
 
@@ -34,15 +42,23 @@
 		860C8222299FD25300A67C14 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		860C8224299FD25300A67C14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		860C822A299FD44400A67C14 /* NetShoppingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetShoppingTableViewCell.swift; sourceTree = "<group>"; };
+		8669F5AD29E2DFFD002B9921 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
+		8669F5AF29E2E04D002B9921 /* FavoritesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesViewController.swift; sourceTree = "<group>"; };
+		8669F5B129E82AAA002B9921 /* FavoritesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesViewModel.swift; sourceTree = "<group>"; };
+		8669F5B329E98031002B9921 /* FavoritesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesTableViewCell.swift; sourceTree = "<group>"; };
 		86DE793B29A4F6F300D47DCF /* NetShoppingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetShoppingViewModel.swift; sourceTree = "<group>"; };
 		86DE793D29A4FBD100D47DCF /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		86DE794529B0ECCD00D47DCF /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
 		86DE794C29B4750500D47DCF /* RakutenProductRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RakutenProductRepository.swift; sourceTree = "<group>"; };
 		86DE794E29B477FF00D47DCF /* ProductRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductRepository.swift; sourceTree = "<group>"; };
 		86DE795229B4C9FB00D47DCF /* RakutenAPIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RakutenAPIError.swift; sourceTree = "<group>"; };
-		86DE795529B9FDC400D47DCF /* UIImageView+Addition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Addition.swift"; sourceTree = "<group>"; };
+		86DE795529B9FDC400D47DCF /* UIImage+Addition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Addition.swift"; sourceTree = "<group>"; };
 		86DE795729BA0C0B00D47DCF /* RakutenAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RakutenAPIClient.swift; sourceTree = "<group>"; };
 		86DE795929BF94C100D47DCF /* RakutenAPIRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RakutenAPIRequest.swift; sourceTree = "<group>"; };
+		86DE795B29D331F500D47DCF /* FavoriteProductRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteProductRepository.swift; sourceTree = "<group>"; };
+		86DE795D29D332E400D47DCF /* CoreDataFavoriteProductRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataFavoriteProductRepository.swift; sourceTree = "<group>"; };
+		86DE798329D96D1300D47DCF /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
+		86DE798529D98FCC00D47DCF /* NSPersistentCloudKitContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSPersistentCloudKitContainer.swift; sourceTree = "<group>"; };
 		8750999729A22B84001D8FBE /* SpacerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpacerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -76,6 +92,7 @@
 		860C8215299FD25200A67C14 /* RakutenSearch */ = {
 			isa = PBXGroup;
 			children = (
+				8669F5AC29E13F47002B9921 /* Common */,
 				860C822C299FD56C00A67C14 /* AppDelegate */,
 				86DE794929B4737F00D47DCF /* Presentation */,
 				86DE794A29B473D600D47DCF /* Domain */,
@@ -102,16 +119,27 @@
 				86DE795429B9FD8D00D47DCF /* Extension */,
 				8750999629A22B59001D8FBE /* Components */,
 				860C822A299FD44400A67C14 /* NetShoppingTableViewCell.swift */,
+				8669F5B329E98031002B9921 /* FavoritesTableViewCell.swift */,
 				860C821A299FD25200A67C14 /* NetShoppingViewController.swift */,
 				86DE793D29A4FBD100D47DCF /* WebViewController.swift */,
+				8669F5AD29E2DFFD002B9921 /* MainTabBarController.swift */,
+				8669F5AF29E2E04D002B9921 /* FavoritesViewController.swift */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		8669F5AC29E13F47002B9921 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Common;
 			sourceTree = "<group>";
 		};
 		86DE793929A4F0B900D47DCF /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
 				86DE793B29A4F6F300D47DCF /* NetShoppingViewModel.swift */,
+				8669F5B129E82AAA002B9921 /* FavoritesViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -120,6 +148,7 @@
 			isa = PBXGroup;
 			children = (
 				86DE794E29B477FF00D47DCF /* ProductRepository.swift */,
+				86DE795B29D331F500D47DCF /* FavoriteProductRepository.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -127,6 +156,7 @@
 		86DE794429B0ECB700D47DCF /* Entity */ = {
 			isa = PBXGroup;
 			children = (
+				86DE798229D96D1300D47DCF /* DataModel.xcdatamodeld */,
 				86DE794529B0ECCD00D47DCF /* Product.swift */,
 			);
 			path = Entity;
@@ -154,6 +184,7 @@
 			isa = PBXGroup;
 			children = (
 				86DE794C29B4750500D47DCF /* RakutenProductRepository.swift */,
+				86DE795D29D332E400D47DCF /* CoreDataFavoriteProductRepository.swift */,
 				86DE795229B4C9FB00D47DCF /* RakutenAPIError.swift */,
 				86DE795729BA0C0B00D47DCF /* RakutenAPIClient.swift */,
 				86DE795929BF94C100D47DCF /* RakutenAPIRequest.swift */,
@@ -164,7 +195,8 @@
 		86DE795429B9FD8D00D47DCF /* Extension */ = {
 			isa = PBXGroup;
 			children = (
-				86DE795529B9FDC400D47DCF /* UIImageView+Addition.swift */,
+				86DE795529B9FDC400D47DCF /* UIImage+Addition.swift */,
+				86DE798529D98FCC00D47DCF /* NSPersistentCloudKitContainer.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -247,19 +279,27 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				86DE795C29D331F500D47DCF /* FavoriteProductRepository.swift in Sources */,
 				86DE795A29BF94C100D47DCF /* RakutenAPIRequest.swift in Sources */,
 				86DE795829BA0C0B00D47DCF /* RakutenAPIClient.swift in Sources */,
 				860C821B299FD25200A67C14 /* NetShoppingViewController.swift in Sources */,
+				86DE798429D96D1300D47DCF /* DataModel.xcdatamodeld in Sources */,
 				860C822B299FD44400A67C14 /* NetShoppingTableViewCell.swift in Sources */,
 				860C8217299FD25200A67C14 /* AppDelegate.swift in Sources */,
-				86DE795629B9FDC400D47DCF /* UIImageView+Addition.swift in Sources */,
+				86DE795E29D332E400D47DCF /* CoreDataFavoriteProductRepository.swift in Sources */,
+				86DE795629B9FDC400D47DCF /* UIImage+Addition.swift in Sources */,
 				8750999829A22B84001D8FBE /* SpacerView.swift in Sources */,
 				86DE793E29A4FBD100D47DCF /* WebViewController.swift in Sources */,
+				8669F5B429E98031002B9921 /* FavoritesTableViewCell.swift in Sources */,
 				86DE794629B0ECCD00D47DCF /* Product.swift in Sources */,
 				86DE793C29A4F6F300D47DCF /* NetShoppingViewModel.swift in Sources */,
+				8669F5AE29E2DFFD002B9921 /* MainTabBarController.swift in Sources */,
 				860C8219299FD25200A67C14 /* SceneDelegate.swift in Sources */,
+				8669F5B229E82AAA002B9921 /* FavoritesViewModel.swift in Sources */,
 				86DE794D29B4750500D47DCF /* RakutenProductRepository.swift in Sources */,
 				86DE794F29B477FF00D47DCF /* ProductRepository.swift in Sources */,
+				86DE798629D98FCC00D47DCF /* NSPersistentCloudKitContainer.swift in Sources */,
+				8669F5B029E2E04D002B9921 /* FavoritesViewController.swift in Sources */,
 				86DE795329B4C9FB00D47DCF /* RakutenAPIError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -470,6 +510,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		86DE798229D96D1300D47DCF /* DataModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				86DE798329D96D1300D47DCF /* DataModel.xcdatamodel */,
+			);
+			currentVersion = 86DE798329D96D1300D47DCF /* DataModel.xcdatamodel */;
+			path = DataModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 860C820B299FD25200A67C14 /* Project object */;
 }

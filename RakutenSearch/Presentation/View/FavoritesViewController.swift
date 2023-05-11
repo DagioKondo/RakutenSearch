@@ -1,32 +1,20 @@
 //
-//  ViewController.swift
-//  Searchers
+//  FavoritesViewController.swift
+//  RakutenSearch
 //
-//  Created by 近藤大伍 on 2023/01/31.
+//  Created by 近藤大伍 on 2023/04/09.
 //
 
 import UIKit
 import Combine
 
-final class NetShoppingViewController: UIViewController {
+final class FavoritesViewController: UIViewController {
     private let tableView: UITableView = {
         let view = UITableView()
-        view.register(NetShoppingTableViewCell.self, forCellReuseIdentifier: "NetShoppingCell")
+        view.register(FavoritesTableViewCell.self, forCellReuseIdentifier: "FavoritesTableViewCell")
         view.estimatedRowHeight = 100
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
-    }()
-    
-    private let searchBar: UISearchBar = {
-        let searchBar = UISearchBar()
-        searchBar.placeholder = "商品を検索"
-        searchBar.autocapitalizationType = UITextAutocapitalizationType.none
-        searchBar.searchTextField.backgroundColor = .white
-        searchBar.searchTextField.layer.shadowColor = UIColor.gray.cgColor
-        searchBar.searchTextField.layer.shadowOpacity = 0.3
-        searchBar.searchTextField.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
-        searchBar.searchTextField.layer.masksToBounds = false
-        return searchBar
     }()
     
     private let indicator: UIActivityIndicatorView = {
@@ -40,13 +28,13 @@ final class NetShoppingViewController: UIViewController {
         return indicator
     }()
     
-    private var products = [Product]() {
+    private var favoriteProducts = [FavProduct]() {
         didSet {
             tableView.reloadData()
         }
     }
     
-    private let viewModel: NetShoppingViewModelable = NetShoppingViewModel()
+    private let viewModel: FavoritesViewModelable = FavoritesViewModel()
     private var subscriptions = Set<AnyCancellable>()
     
     init() {
@@ -64,9 +52,13 @@ final class NetShoppingViewController: UIViewController {
         bindUI()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        Task { await viewModel.willAppear() }
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        setSearchBar()
+        setNavigationBar()
     }
     
     private func setTableView() {
@@ -81,14 +73,6 @@ final class NetShoppingViewController: UIViewController {
         ])
     }
     
-    private func setSearchBar() {
-        self.navigationItem.titleView = searchBar
-        if let navigationController = self.navigationController {
-            searchBar.frame = navigationController.navigationBar.bounds
-            searchBar.delegate = self
-        }
-    }
-    
     private func setIndicator() {
         view.addSubview(indicator)
         NSLayoutConstraint.activate([
@@ -99,6 +83,10 @@ final class NetShoppingViewController: UIViewController {
             indicator.topAnchor.constraint(equalTo: self.tableView.topAnchor),
             indicator.bottomAnchor.constraint(equalTo: self.tableView.bottomAnchor)
         ])
+    }
+    
+    private func setNavigationBar() {
+        self.navigationItem.title = "お気に入り"
     }
     
     private func bindUI() {
@@ -133,45 +121,27 @@ final class NetShoppingViewController: UIViewController {
                 self?.tableView.reloadData()
             }
             .store(in: &subscriptions)
-        viewModel.productsPublisher
+        viewModel.favoriteProductsPublisher
             .receive(on: DispatchQueue.main)
-            .sink { products in
-                self.products = products
+            .sink { favProducts in
+                self.favoriteProducts = favProducts
             }
             .store(in: &subscriptions)
     }
 }
 
-extension NetShoppingViewController: UITableViewDelegate, UITableViewDataSource {
+extension FavoritesViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return products.count
+        return favoriteProducts.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "NetShoppingCell", for: indexPath) as! NetShoppingTableViewCell
-        cell.render(viewModel: viewModel, indexPath: indexPath, product: self.products[indexPath.row])
+        let cell = tableView.dequeueReusableCell(withIdentifier: "FavoritesTableViewCell", for: indexPath) as! FavoritesTableViewCell
+        cell.render(viewModel: viewModel, indexPath: indexPath, product: favoriteProducts[indexPath.row])
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         viewModel.didSelectRowAt(indexPath)
-    }
-}
-
-extension NetShoppingViewController: UISearchBarDelegate {
-    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {}
-    
-    func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
-        searchBar.setShowsCancelButton(true, animated: true)
-        return true
-    }
-    
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        searchBar.showsCancelButton = false
-        searchBar.resignFirstResponder()
-    }
-    
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        Task { await viewModel.onSearchButtonClicked(query: searchBar.text) }
     }
 }

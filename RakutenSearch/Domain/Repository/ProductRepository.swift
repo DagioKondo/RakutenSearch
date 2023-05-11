@@ -10,5 +10,5 @@ import Combine
 
 // 商品を取得するリポジトリインターフェース
 protocol ProductRepository {
-    func fetchProduct(query: String) async throws -> Products
+    func fetchProduct(query: String) async throws -> [Product]
 }

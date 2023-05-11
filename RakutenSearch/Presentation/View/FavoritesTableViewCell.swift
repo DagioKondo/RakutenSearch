@@ -1,13 +1,14 @@
 //
-//  NetShoppingTableViewCell.swift
-//  Searchers
+//  FavoritesTableViewCell.swift
+//  RakutenSearch
 //
-//  Created by 近藤大伍 on 2023/02/13.
+//  Created by 近藤大伍 on 2023/04/14.
 //
 
 import UIKit
+import Combine
 
-final class NetShoppingTableViewCell: UITableViewCell {
+final class FavoritesTableViewCell: UITableViewCell {
     private let productImageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
@@ -99,7 +100,7 @@ final class NetShoppingTableViewCell: UITableViewCell {
         return stackView
     }()
     
-    private var viewModel: NetShoppingViewModelable?
+    private var viewModel: FavoritesViewModelable?
     private var indexPath: IndexPath?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -152,7 +153,7 @@ final class NetShoppingTableViewCell: UITableViewCell {
             favoriteButton.widthAnchor.constraint(equalToConstant: 40)
         ])
     }
-//    
+//
 //    func render(product: Product) {
 //        let itemName = product.item.name
 //        let itemPrice = product.item.price
@@ -165,20 +166,21 @@ final class NetShoppingTableViewCell: UITableViewCell {
 //        favoriteButton.setImage(UIImage(systemName: product.item.favProductImage), for: .normal)
 //    }
     
-    func render(viewModel: NetShoppingViewModelable, indexPath: IndexPath, product: Product) {
+    func render(viewModel: FavoritesViewModelable, indexPath: IndexPath, product: FavProduct) {
         self.viewModel = viewModel
         self.indexPath = indexPath
         let product = product
-        let itemName = product.item.name
-        let itemPrice = product.item.price
-        let imageUrl = product.item.imageUrls[0]
-        let itemReviewAverage = product.item.reviewAverage
+        let itemPrice = product.price
+        let itemReviewAverage = product.reviewAverage
+        guard let itemName = product.name,
+              let imageUrl = product.imageUrl
+        else { return }
         titleLabel.text = itemName
         priceLabel.text = "￥" + String(itemPrice)
         productImageView.image = UIImage.getImageByUrl(url: imageUrl)
         valuationLabel.text = String(itemReviewAverage)
         favoriteButton.tag = indexPath.row
-        favoriteButton.setImage(UIImage(systemName: product.item.favProductImage), for: .normal)
+//        favoriteButton.setImage(UIImage(systemName: product.favProductImage), for: .normal)
     }
     
     @objc func onFavoriteButtonClicked(_ sender: UIButton) {
@@ -189,3 +191,4 @@ final class NetShoppingTableViewCell: UITableViewCell {
         Task { await self.viewModel?.onFavoriteButtonClicked(indexPath) }
     }
 }
+

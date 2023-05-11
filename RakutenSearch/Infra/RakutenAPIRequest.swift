@@ -41,6 +41,7 @@ extension RakutenAPIBaseRequest {
         }
         var urlRequest = URLRequest(url: url)
         urlRequest.url = components?.url
+//        urlRequest.url = URL(string: "https://app.rakuten.co.jp/services/api/IchibaItem/Search/20220601?format=json&keyword=%E3%82%8A%E3%82%93%E3%81%94&formatVersion=2&applicationId=1072027207911802205")
         urlRequest.httpMethod = method.rawValue
 
         return urlRequest
@@ -65,6 +66,7 @@ struct RakutenAPIRequest<ResponseDataType: Codable>: RakutenAPIBaseRequest {
         self.method = method
         self.queryItems = queryItems
         self.queryItems.append(URLQueryItem(name: "format", value: "json"))
+//        self.queryItems.append(URLQueryItem(name: "formatVersion", value: "2"))
         self.queryItems.append(URLQueryItem(name: "applicationId", value: "1072027207911802205"))
     }
 }

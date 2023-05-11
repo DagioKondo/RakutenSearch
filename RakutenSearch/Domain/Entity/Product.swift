@@ -16,21 +16,30 @@ struct Products: Codable {
 }
 
 struct Product: Codable {
-    let item: ProductInfo
-    
+    var item: ProductInfo
+
     enum CodingKeys: String, CodingKey {
         case item = "Item"
     }
 }
 
 struct ProductInfo: Codable {
-    var urlString:String
-    var name:String
-    var price:Int
-    var imageUrls:[String]
-    var reviewAverage:Double
+    var itemCode: String
+    var urlString: String
+    var name: String
+    var price: Int
+    var imageUrls: [String]
+    var reviewAverage: Double
+    var favorite:Bool = false
+    var favProductImage:String{
+        switch self.favorite{
+        case true: return "heart.fill"
+        case false: return "heart"
+        }
+    }
     
     enum CodingKeys: String, CodingKey {
+        case itemCode = "itemCode"
         case urlString = "itemUrl"
         case name = "itemName"
         case price = "itemPrice"
@@ -56,6 +65,7 @@ extension ProductInfo {
         }
         self.imageUrls = imageUrls
         // 楽天APIはキーが見つからない場合がないのでdecodeIfPresentは使わない
+        self.itemCode = try rootContainer.decode(String.self, forKey: .itemCode)
         self.urlString = try rootContainer.decode(String.self, forKey: .urlString)
         self.name = try rootContainer.decode(String.self, forKey: .name)
         self.price = try rootContainer.decode(Int.self, forKey: .price)
