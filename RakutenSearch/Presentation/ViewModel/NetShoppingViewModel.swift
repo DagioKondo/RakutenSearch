@@ -11,29 +11,23 @@ import Combine
 
 protocol NetShoppingViewModelable {
     var showWebViewPublisher: AnyPublisher<URL, Never> { get }
-    var onSearchButtonClickedPublisher: AnyPublisher<Void, Never> { get }
     var isLoadingPublisher: AnyPublisher<Bool, Never> { get }
     var addToFavoritePublisher: AnyPublisher<Bool, Never> { get }
-    var products:[Product] { get }
-    func handleSearchButtonClicked(query: String?) async
-    func handleDidSelectRowAt(_ indexPath: IndexPath)
-    func addToFavorites(_ indexPath: IndexPath) async
+    var productsPublisher: AnyPublisher<[Product], Never> { get }
+    func onSearchButtonClicked(query: String?) async
+    func didSelectRowAt(_ indexPath: IndexPath)
+    func onFavoriteButtonClicked(_ indexPath: IndexPath) async
 }
 
 final class NetShoppingViewModel {
     private let showWebViewSubject = PassthroughSubject<URL, Never>()
-    private let onSearchButtonClickedSubject = PassthroughSubject<Void, Never>()
     private let isLoadingSubject = PassthroughSubject<Bool, Never>()
     private let addToFavoriteSubject = PassthroughSubject<Bool, Never>()
+    private let productsSubject: CurrentValueSubject<[Product], Never> = .init([])
     private let productRepository: ProductRepository = RakutenProductRepository()
-    var products:[Product] = []
     
     var showWebViewPublisher: AnyPublisher<URL, Never> {
         return showWebViewSubject.eraseToAnyPublisher()
-    }
-    
-    var onSearchButtonClickedPublisher: AnyPublisher<Void, Never> {
-        return onSearchButtonClickedSubject.eraseToAnyPublisher()
     }
     
     var isLoadingPublisher: AnyPublisher<Bool, Never> {
@@ -44,24 +38,21 @@ final class NetShoppingViewModel {
         return addToFavoriteSubject.eraseToAnyPublisher()
     }
     
-//    convenience init() {
-//        self.init(repository: RakutenProductRepository())
-//    }
-//
-//    private init(repository: ProductRepository) {
-//        productRepository = repository
-//    }
+    var productsPublisher: AnyPublisher<[Product], Never> {
+        return productsSubject.eraseToAnyPublisher()
+    }
 }
 
 extension NetShoppingViewModel: NetShoppingViewModelable {
-    func handleSearchButtonClicked(query: String?) async {
+    func onSearchButtonClicked(query: String?) async {
         do {
             isLoadingSubject.send(true)
             guard let query = query else { return isLoadingSubject.send(false) }
+//            let favoriteProducts = try await CoreDataFavoriteProductRepository.shared.getFavProducts()
             // ランキングAPIを叩く想定で並列処理にしている
-            async let products = productRepository.fetchProduct(query: query).items
-            self.products = try await products
-            onSearchButtonClickedSubject.send()
+            async let products = productRepository.fetchProduct(query: query)
+            self.productsSubject.value = try await products
+            print(self.productsSubject.value)
             isLoadingSubject.send(false)
         } catch {
             guard let error = error as? RakutenAPIError else { return }
@@ -70,22 +61,22 @@ extension NetShoppingViewModel: NetShoppingViewModelable {
         }
     }
     
-    func handleDidSelectRowAt(_ indexPath: IndexPath) {
-        let itemUrl = products[indexPath.row].item.urlString
+    func didSelectRowAt(_ indexPath: IndexPath) {
+        let itemUrl = productsSubject.value[indexPath.row].item.urlString
         guard let url = URL(string: itemUrl) else { return }
         showWebViewSubject.send(url)
     }
     
-    func addToFavorites(_ indexPath: IndexPath) async {
+    func onFavoriteButtonClicked(_ indexPath: IndexPath) async {
         do {
-            if products[indexPath.row].item.favorite == true {
-                let favoriteProduct = products[indexPath.row].item
-                try await CoreDataFavoriteProductRepository.shared.delete(id: favoriteProduct.itemCode)
-                products[indexPath.row].item.favorite = false
+            if productsSubject.value[indexPath.row].item.favorite == true {
+                let favoriteProduct = productsSubject.value[indexPath.row]
+//                try await CoreDataFavoriteProductRepository.shared.delete(id: favoriteProduct.itemCode)
+                productsSubject.value[indexPath.row].item.favorite = false
                 addToFavoriteSubject.send(false)
             } else {
-                products[indexPath.row].item.favorite = true
-                let favoriteProduct = products[indexPath.row].item
+                productsSubject.value[indexPath.row].item.favorite = true
+                let favoriteProduct = productsSubject.value[indexPath.row]
                 try await CoreDataFavoriteProductRepository.shared.insertFavoriteProduct(into: favoriteProduct)
                 addToFavoriteSubject.send(true)
             }

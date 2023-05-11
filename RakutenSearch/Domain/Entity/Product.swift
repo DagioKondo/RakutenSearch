@@ -17,7 +17,7 @@ struct Products: Codable {
 
 struct Product: Codable {
     var item: ProductInfo
-    
+
     enum CodingKeys: String, CodingKey {
         case item = "Item"
     }
@@ -33,11 +33,10 @@ struct ProductInfo: Codable {
     var favorite:Bool = false
     var favProductImage:String{
         switch self.favorite{
-        case true: return "bookmark.fill"
-        case false: return "bookmark"
+        case true: return "heart.fill"
+        case false: return "heart"
         }
     }
-    
     
     enum CodingKeys: String, CodingKey {
         case itemCode = "itemCode"

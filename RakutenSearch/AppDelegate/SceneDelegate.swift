@@ -20,7 +20,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
-            window.rootViewController = UINavigationController(rootViewController: NetShoppingViewController.init())
+//            window.rootViewController = UINavigationController(rootViewController: MainTabBarController.init())
+            window.rootViewController = MainTabBarController()
             self.window = window
             window.makeKeyAndVisible()
         }

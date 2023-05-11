@@ -10,7 +10,7 @@ import Combine
 
 // 商品を取得するリポジトリインターフェース
 protocol FavoriteProductRepository {
-    func insertFavoriteProduct(into: ProductInfo) async throws
-    func getFavProduct() async throws -> [FavProduct]
+    func insertFavoriteProduct(into: Product) async throws
+    func getFavProducts() async throws -> [FavProduct]
     func delete(id: String) async throws
 }
