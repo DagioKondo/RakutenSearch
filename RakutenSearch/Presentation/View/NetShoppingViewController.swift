@@ -121,12 +121,12 @@ final class NetShoppingViewController: UIViewController {
         viewModel.addToFavoritePublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in
-                $0
-                ? print("お気に入り追加しました。")
-                : print("お気に入り追加済みです。");
+//                $0
+//                ? print("お気に入り追加しました。")
+//                : print("お気に入り追加済みです。");
                 let alert = UIAlertController(title: "お気に入りに追加しました。", message: "", preferredStyle: .alert)
                 self?.present(alert, animated: true, completion: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                         alert.dismiss(animated: true, completion: nil)
                     }
                 })
@@ -155,6 +155,17 @@ extension NetShoppingViewController: UITableViewDelegate, UITableViewDataSource 
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         viewModel.didSelectRowAt(indexPath)
+    }
+}
+
+extension NetShoppingViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        if offsetY > contentHeight - scrollView.frame.size.height {
+            // ここで次のページを読み込む処理を実行する
+            
+        }
     }
 }
 

@@ -106,21 +106,21 @@ final class FavoritesViewController: UIViewController {
                 self?.indicator.isHidden = !$0
             }
             .store(in: &subscriptions)
-        viewModel.addToFavoritePublisher
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in
-                $0
-                ? print("お気に入り追加しました。")
-                : print("お気に入り追加済みです。");
-                let alert = UIAlertController(title: "お気に入りに追加しました。", message: "", preferredStyle: .alert)
-                self?.present(alert, animated: true, completion: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        alert.dismiss(animated: true, completion: nil)
-                    }
-                })
-                self?.tableView.reloadData()
-            }
-            .store(in: &subscriptions)
+//        viewModel.addToFavoritePublisher
+//            .receive(on: DispatchQueue.main)
+//            .sink { [weak self] in
+//                $0
+//                ? print("お気に入り追加しました。")
+//                : print("お気に入り追加済みです。");
+//                let alert = UIAlertController(title: "お気に入りに追加しました。", message: "", preferredStyle: .alert)
+//                self?.present(alert, animated: true, completion: {
+//                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+//                        alert.dismiss(animated: true, completion: nil)
+//                    }
+//                })
+//                self?.tableView.reloadData()
+//            }
+//            .store(in: &subscriptions)
         viewModel.favoriteProductsPublisher
             .receive(on: DispatchQueue.main)
             .sink { favProducts in
@@ -143,5 +143,11 @@ extension FavoritesViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         viewModel.didSelectRowAt(indexPath)
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            Task { await viewModel.deleteProduct(indexPath) }
+        }
     }
 }

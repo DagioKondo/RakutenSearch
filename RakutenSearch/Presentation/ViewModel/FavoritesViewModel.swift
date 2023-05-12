@@ -12,17 +12,17 @@ import Combine
 protocol FavoritesViewModelable {
     var showWebViewPublisher: AnyPublisher<URL, Never> { get }
     var isLoadingPublisher: AnyPublisher<Bool, Never> { get }
-    var addToFavoritePublisher: AnyPublisher<Bool, Never> { get }
+//    var addToFavoritePublisher: AnyPublisher<Bool, Never> { get }
     var favoriteProductsPublisher: AnyPublisher<[FavProduct], Never> { get }
     func willAppear() async
     func didSelectRowAt(_ indexPath: IndexPath)
-    func onFavoriteButtonClicked(_ indexPath: IndexPath) async
+    func deleteProduct(_ indexPath: IndexPath) async
 }
 
 final class FavoritesViewModel {
     private let showWebViewSubject = PassthroughSubject<URL, Never>()
     private let isLoadingSubject = PassthroughSubject<Bool, Never>()
-    private let addToFavoriteSubject = PassthroughSubject<Bool, Never>()
+//    private let addToFavoriteSubject = PassthroughSubject<Bool, Never>()
     private let favoriteProductsSubject: CurrentValueSubject<[FavProduct], Never> = .init([])
     
     var showWebViewPublisher: AnyPublisher<URL, Never> {
@@ -33,10 +33,10 @@ final class FavoritesViewModel {
         return isLoadingSubject.eraseToAnyPublisher()
     }
     
-    var addToFavoritePublisher: AnyPublisher<Bool, Never> {
-        return addToFavoriteSubject.eraseToAnyPublisher()
-    }
-    
+//    var addToFavoritePublisher: AnyPublisher<Bool, Never> {
+//        return addToFavoriteSubject.eraseToAnyPublisher()
+//    }
+//
     
     var favoriteProductsPublisher: AnyPublisher<[FavProduct], Never> {
         return favoriteProductsSubject.eraseToAnyPublisher()
@@ -66,12 +66,14 @@ extension FavoritesViewModel: FavoritesViewModelable {
         showWebViewSubject.send(url)
     }
     
-    func onFavoriteButtonClicked(_ indexPath: IndexPath) async {
+    func deleteProduct(_ indexPath: IndexPath) async {
+        print(favoriteProductsSubject.value[indexPath.row].itemCode)
         do {
             guard let itemCode = favoriteProductsSubject.value[indexPath.row].itemCode else { return }
+            favoriteProductsSubject.value.remove(at: indexPath.row)
             try await CoreDataFavoriteProductRepository.shared.delete(id: itemCode)
         } catch {
-            fatalError()
+            print(error)
         }
     }
 }

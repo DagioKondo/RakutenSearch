@@ -25,8 +25,8 @@ final class NetShoppingTableViewCell: UITableViewCell {
     private let favoriteButton: UIButton = {
         let button = UIButton(type: .custom)
         button.imageView?.contentMode = .scaleAspectFit
-        button.setImage(UIImage(systemName: "heart"), for: .normal)
-        button.tintColor = .red
+        button.setImage(UIImage(systemName: "plus.circle"), for: .normal)
+        button.tintColor = .systemBlue
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -178,7 +178,6 @@ final class NetShoppingTableViewCell: UITableViewCell {
         productImageView.image = UIImage.getImageByUrl(url: imageUrl)
         valuationLabel.text = String(itemReviewAverage)
         favoriteButton.tag = indexPath.row
-        favoriteButton.setImage(UIImage(systemName: product.item.favProductImage), for: .normal)
     }
     
     @objc func onFavoriteButtonClicked(_ sender: UIButton) {

@@ -12,7 +12,7 @@ import Combine
 protocol NetShoppingViewModelable {
     var showWebViewPublisher: AnyPublisher<URL, Never> { get }
     var isLoadingPublisher: AnyPublisher<Bool, Never> { get }
-    var addToFavoritePublisher: AnyPublisher<Bool, Never> { get }
+    var addToFavoritePublisher: AnyPublisher<Void, Never> { get }
     var productsPublisher: AnyPublisher<[Product], Never> { get }
     func onSearchButtonClicked(query: String?) async
     func didSelectRowAt(_ indexPath: IndexPath)
@@ -22,7 +22,7 @@ protocol NetShoppingViewModelable {
 final class NetShoppingViewModel {
     private let showWebViewSubject = PassthroughSubject<URL, Never>()
     private let isLoadingSubject = PassthroughSubject<Bool, Never>()
-    private let addToFavoriteSubject = PassthroughSubject<Bool, Never>()
+    private let addToFavoriteSubject = PassthroughSubject<Void, Never>()
     private let productsSubject: CurrentValueSubject<[Product], Never> = .init([])
     private let productRepository: ProductRepository = RakutenProductRepository()
     
@@ -34,7 +34,7 @@ final class NetShoppingViewModel {
         return isLoadingSubject.eraseToAnyPublisher()
     }
     
-    var addToFavoritePublisher: AnyPublisher<Bool, Never> {
+    var addToFavoritePublisher: AnyPublisher<Void, Never> {
         return addToFavoriteSubject.eraseToAnyPublisher()
     }
     
@@ -52,7 +52,6 @@ extension NetShoppingViewModel: NetShoppingViewModelable {
             // ランキングAPIを叩く想定で並列処理にしている
             async let products = productRepository.fetchProduct(query: query)
             self.productsSubject.value = try await products
-            print(self.productsSubject.value)
             isLoadingSubject.send(false)
         } catch {
             guard let error = error as? RakutenAPIError else { return }
@@ -67,19 +66,23 @@ extension NetShoppingViewModel: NetShoppingViewModelable {
         showWebViewSubject.send(url)
     }
     
+    func didScrollToBottom() {
+        
+    }
+    
     func onFavoriteButtonClicked(_ indexPath: IndexPath) async {
         do {
-            if productsSubject.value[indexPath.row].item.favorite == true {
-                let favoriteProduct = productsSubject.value[indexPath.row]
-//                try await CoreDataFavoriteProductRepository.shared.delete(id: favoriteProduct.itemCode)
-                productsSubject.value[indexPath.row].item.favorite = false
-                addToFavoriteSubject.send(false)
-            } else {
-                productsSubject.value[indexPath.row].item.favorite = true
+//            if productsSubject.value[indexPath.row].item.favorite == true {
+//                let favoriteProduct = productsSubject.value[indexPath.row]
+////                try await CoreDataFavoriteProductRepository.shared.delete(id: favoriteProduct.itemCode)
+//                productsSubject.value[indexPath.row].item.favorite = false
+//                addToFavoriteSubject.send(false)
+//            } else {
+//                productsSubject.value[indexPath.row].item.favorite = true
                 let favoriteProduct = productsSubject.value[indexPath.row]
                 try await CoreDataFavoriteProductRepository.shared.insertFavoriteProduct(into: favoriteProduct)
-                addToFavoriteSubject.send(true)
-            }
+                addToFavoriteSubject.send()
+//            }
         } catch {
             fatalError()
         }

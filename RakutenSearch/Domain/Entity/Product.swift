@@ -30,13 +30,6 @@ struct ProductInfo: Codable {
     var price: Int
     var imageUrls: [String]
     var reviewAverage: Double
-    var favorite:Bool = false
-    var favProductImage:String{
-        switch self.favorite{
-        case true: return "heart.fill"
-        case false: return "heart"
-        }
-    }
     
     enum CodingKeys: String, CodingKey {
         case itemCode = "itemCode"
