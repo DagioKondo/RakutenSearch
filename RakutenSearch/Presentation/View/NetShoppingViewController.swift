@@ -11,7 +11,7 @@ import Combine
 final class NetShoppingViewController: UIViewController {
     private let tableView: UITableView = {
         let view = UITableView()
-        view.register(NetShoppingTableViewCell.self, forCellReuseIdentifier: "NetShoppingCell")
+        view.register(NetShoppingCell.self, forCellReuseIdentifier: NetShoppingCell.reuseIdentifier)
         view.estimatedRowHeight = 100
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -34,8 +34,6 @@ final class NetShoppingViewController: UIViewController {
         indicator.hidesWhenStopped = true
         indicator.isHidden = true
         indicator.style = .large
-        indicator.color = UIColor.systemMint
-        indicator.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.2)
         indicator.translatesAutoresizingMaskIntoConstraints = false
         return indicator
     }()
@@ -48,6 +46,7 @@ final class NetShoppingViewController: UIViewController {
     
     private let viewModel: NetShoppingViewModelable = NetShoppingViewModel()
     private var subscriptions = Set<AnyCancellable>()
+    private var isLoading = false
     
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -148,7 +147,7 @@ extension NetShoppingViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "NetShoppingCell", for: indexPath) as! NetShoppingTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: NetShoppingCell.reuseIdentifier, for: indexPath) as! NetShoppingCell
         cell.render(viewModel: viewModel, indexPath: indexPath, product: self.products[indexPath.row])
         return cell
     }
@@ -162,9 +161,14 @@ extension NetShoppingViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height
-        if offsetY > contentHeight - scrollView.frame.size.height {
-            // ここで次のページを読み込む処理を実行する
-            
+        if offsetY > contentHeight - scrollView.frame.size.height &&
+            contentHeight != 0 &&
+            !isLoading {
+            isLoading = true
+            Task {
+                await viewModel.didScrollToBottom()
+                isLoading = false
+            }
         }
     }
 }
@@ -183,6 +187,6 @@ extension NetShoppingViewController: UISearchBarDelegate {
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        Task { await viewModel.onSearchButtonClicked(query: searchBar.text) }
+        Task { await viewModel.onSearchButtonClicked(keyword: searchBar.text) }
     }
 }

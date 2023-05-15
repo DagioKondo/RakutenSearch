@@ -11,7 +11,7 @@ import Combine
 final class FavoritesViewController: UIViewController {
     private let tableView: UITableView = {
         let view = UITableView()
-        view.register(FavoritesTableViewCell.self, forCellReuseIdentifier: "FavoritesTableViewCell")
+        view.register(FavoritesCell.self, forCellReuseIdentifier: FavoritesCell.reuseIdentifier)
         view.estimatedRowHeight = 100
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -136,7 +136,7 @@ extension FavoritesViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "FavoritesTableViewCell", for: indexPath) as! FavoritesTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: FavoritesCell.reuseIdentifier, for: indexPath) as! FavoritesCell
         cell.render(viewModel: viewModel, indexPath: indexPath, product: favoriteProducts[indexPath.row])
         return cell
     }

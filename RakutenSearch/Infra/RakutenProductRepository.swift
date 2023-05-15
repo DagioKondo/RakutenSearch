@@ -13,11 +13,12 @@ struct RakutenProductRepository: ProductRepository {
     private let apiClient = RakutenAPIClient()
     
     // 楽天市場APIから商品検索
-    func fetchProduct(query: String) async throws -> [Product] {
+    func fetchProduct(query: RakutenAPIQuery) async throws -> [Product] {
 //        httpリクエスト作成
         let urlQueryItems = [
-            URLQueryItem(name: "keyword", value: query),
-            // 付け足すかも
+            URLQueryItem(name: "keyword", value: query.keyword),
+            URLQueryItem(name: "page", value: query.page),
+            URLQueryItem(name: "sort", value: query.sort)
         ]
         let rakutenProductAPIRequest: RakutenAPIRequest<Products> = try RakutenAPIRequest(path: RakutenAPIUrl.rakutenProductSearchAPI.rawValue, method: .get, queryItems: urlQueryItems)
         let products = try await apiClient.fetch(request: rakutenProductAPIRequest).items
