@@ -16,6 +16,13 @@ enum RakutenAPIUrl: String {
     case rakutenProductSearchAPI = "/Search/20170706"
 }
 
+// サービス固有の入力パラメーターの構造体
+struct RakutenAPIQuery {
+    var keyword: String = ""
+    var page: String = "1"
+    var sort: String = "standard"
+}
+
 protocol RakutenAPIBaseRequest {
     associatedtype Response: Decodable
 

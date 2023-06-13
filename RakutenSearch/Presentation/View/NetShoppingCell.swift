@@ -7,7 +7,8 @@
 
 import UIKit
 
-final class NetShoppingTableViewCell: UITableViewCell {
+final class NetShoppingCell: UICollectionViewCell {
+    static let reuseIdentifier = "NetShoppingCell"
     private let productImageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
@@ -25,8 +26,8 @@ final class NetShoppingTableViewCell: UITableViewCell {
     private let favoriteButton: UIButton = {
         let button = UIButton(type: .custom)
         button.imageView?.contentMode = .scaleAspectFit
-        button.setImage(UIImage(systemName: "heart"), for: .normal)
-        button.tintColor = .red
+        button.setImage(UIImage(systemName: "plus.circle"), for: .normal)
+        button.tintColor = .systemBlue
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -102,21 +103,17 @@ final class NetShoppingTableViewCell: UITableViewCell {
     private var viewModel: NetShoppingViewModelable?
     private var indexPath: IndexPath?
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         favoriteButton.addTarget(self, action: #selector(onFavoriteButtonClicked(_:)), for: .touchUpInside)
-        setup()
+        configure()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-    }
-    
-    private func setup() {
+    private func configure() {
         self.contentView.addSubview(containerHorizontalStackView)
 
         containerHorizontalStackView.addArrangedSubview(productImageVerticalStackView)
@@ -178,7 +175,6 @@ final class NetShoppingTableViewCell: UITableViewCell {
         productImageView.image = UIImage.getImageByUrl(url: imageUrl)
         valuationLabel.text = String(itemReviewAverage)
         favoriteButton.tag = indexPath.row
-        favoriteButton.setImage(UIImage(systemName: product.item.favProductImage), for: .normal)
     }
     
     @objc func onFavoriteButtonClicked(_ sender: UIButton) {

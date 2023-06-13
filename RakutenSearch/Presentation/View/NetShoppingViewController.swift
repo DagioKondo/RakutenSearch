@@ -9,13 +9,26 @@ import UIKit
 import Combine
 
 final class NetShoppingViewController: UIViewController {
-    private let tableView: UITableView = {
-        let view = UITableView()
-        view.register(NetShoppingTableViewCell.self, forCellReuseIdentifier: "NetShoppingCell")
-        view.estimatedRowHeight = 100
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
+    enum Section: Int, Hashable, CaseIterable {
+        case coupon
+        case list
+        var description: String {
+            switch self {
+            case .coupon: return "coupon"
+            case .list: return "list"
+            }
+        }
+    }
+    
+    struct NetShoppingItem: Hashable {
+        let coupon: CouponCell?
+        let product: NetShoppingCell?
+        
+        init(coupon: CouponCell? = nil, product: NetShoppingCell? = nil) {
+            self.coupon = coupon
+            self.product = product
+        }
+    }
     
     private let searchBar: UISearchBar = {
         let searchBar = UISearchBar()
@@ -34,20 +47,15 @@ final class NetShoppingViewController: UIViewController {
         indicator.hidesWhenStopped = true
         indicator.isHidden = true
         indicator.style = .large
-        indicator.color = UIColor.systemMint
-        indicator.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.2)
         indicator.translatesAutoresizingMaskIntoConstraints = false
         return indicator
     }()
     
-    private var products = [Product]() {
-        didSet {
-            tableView.reloadData()
-        }
-    }
-    
+    private var collectionView: UICollectionView!
+    private var dataSource: UICollectionViewDiffableDataSource<Section, NetShoppingItem>!
     private let viewModel: NetShoppingViewModelable = NetShoppingViewModel()
     private var subscriptions = Set<AnyCancellable>()
+    private var isLoading = false
     
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -59,29 +67,100 @@ final class NetShoppingViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setTableView()
-        setIndicator()
+        
+        configureCollectionView()
+        configureDataSource()
+        applyInitialSnapshot()
+        configureIndicator()
         bindUI()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        setSearchBar()
+        configureSearchBar()
     }
     
-    private func setTableView() {
-        view.addSubview(tableView)
-        tableView.delegate = self
-        tableView.dataSource = self
+    private func configureCollectionView() {
+        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
+        collectionView.register(NetShoppingCell.self, forCellWithReuseIdentifier: NetShoppingCell.reuseIdentifier)
+        collectionView.register(CouponCell.self, forCellWithReuseIdentifier: CouponCell.reuseIdentifier)
+        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(collectionView)
+        collectionView.delegate = self
         NSLayoutConstraint.activate([
-            tableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-            tableView.topAnchor.constraint(equalTo: self.view.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+            collectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            collectionView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
         ])
     }
     
-    private func setSearchBar() {
+    private func configureDataSource() {
+        dataSource = UICollectionViewDiffableDataSource<Section, NetShoppingItem>(collectionView: collectionView) { (collectionView: UICollectionView, indexPath: IndexPath, identifier: NetShoppingItem) -> UICollectionViewCell? in
+            guard let section = Section(rawValue: indexPath.section) else { fatalError("Unknown section") }
+            switch section {
+            case .coupon:
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CouponCell.reuseIdentifier, for: indexPath) as? CouponCell
+                cell?.render(viewModel: self.viewModel, coupon: self.viewModel.coupons[indexPath.row])
+                return cell
+            case .list:
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NetShoppingCell.reuseIdentifier, for: indexPath) as? NetShoppingCell
+                cell?.render(viewModel: self.viewModel, indexPath: indexPath, product: self.viewModel.products[indexPath.row])
+                return cell
+            }
+        }
+    }
+    
+    private func applyInitialSnapshot() {
+        let sections = Section.allCases
+        var snapshot = NSDiffableDataSourceSnapshot<Section, NetShoppingItem>()
+        snapshot.appendSections(sections)
+        dataSource.apply(snapshot, animatingDifferences: true)
+    }
+    
+    private func applyProductSnapshot() {
+        var productSnapshot = NSDiffableDataSourceSectionSnapshot<NetShoppingItem>()
+        let netShoppingList = Array(0..<viewModel.products.count).map { _ in NetShoppingItem(product: NetShoppingCell()) }
+        productSnapshot.append(netShoppingList)
+        dataSource.apply(productSnapshot, to: .list, animatingDifferences: false)
+        print("あああ" + "\(viewModel.products.count)")
+    }
+    
+    private func applyCouponSnapshot() {
+        var couponSnapshot = NSDiffableDataSourceSectionSnapshot<NetShoppingItem>()
+        let couponList = Array(0..<viewModel.coupons.count).map { _ in NetShoppingItem(coupon: CouponCell()) }
+        couponSnapshot.append(couponList)
+        dataSource.apply(couponSnapshot, to: .coupon, animatingDifferences: true)
+    }
+    
+    private func createLayout() -> UICollectionViewLayout {
+        let sectionProvider = { [weak self] (sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
+            guard let sectionKind = Section(rawValue: sectionIndex) else { return nil }
+            let section: NSCollectionLayoutSection
+            if sectionKind == .coupon {
+                let size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+                let item = NSCollectionLayoutItem(layoutSize: size)
+                item.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)
+                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.7), heightDimension: .fractionalWidth(0.3))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+                section = NSCollectionLayoutSection(group: group)
+                section.interGroupSpacing = 10
+                section.orthogonalScrollingBehavior = .continuousGroupLeadingBoundary
+                section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+                // outline
+            } else if sectionKind == .list {
+                section = NSCollectionLayoutSection.list(using: .init(appearance: .sidebar), layoutEnvironment: layoutEnvironment)
+            } else {
+                fatalError("Unknown section!")
+            }
+            return section
+        }
+        
+        return UICollectionViewCompositionalLayout(sectionProvider: sectionProvider)
+    }
+    
+    private func configureSearchBar() {
         self.navigationItem.titleView = searchBar
         if let navigationController = self.navigationController {
             searchBar.frame = navigationController.navigationBar.bounds
@@ -89,15 +168,13 @@ final class NetShoppingViewController: UIViewController {
         }
     }
     
-    private func setIndicator() {
+    private func configureIndicator() {
         view.addSubview(indicator)
         NSLayoutConstraint.activate([
-//            indicator.centerYAnchor.constraint(equalTo: self.tableView.centerYAnchor),
-//            indicator.centerXAnchor.constraint(equalTo: self.tableView.centerXAnchor),
-            indicator.leadingAnchor.constraint(equalTo: self.tableView.leadingAnchor),
-            indicator.trailingAnchor.constraint(equalTo: self.tableView.trailingAnchor),
-            indicator.topAnchor.constraint(equalTo: self.tableView.topAnchor),
-            indicator.bottomAnchor.constraint(equalTo: self.tableView.bottomAnchor)
+            indicator.leadingAnchor.constraint(equalTo: self.collectionView.leadingAnchor),
+            indicator.trailingAnchor.constraint(equalTo: self.collectionView.trailingAnchor),
+            indicator.topAnchor.constraint(equalTo: self.collectionView.topAnchor),
+            indicator.bottomAnchor.constraint(equalTo: self.collectionView.bottomAnchor)
         ])
     }
     
@@ -121,40 +198,48 @@ final class NetShoppingViewController: UIViewController {
         viewModel.addToFavoritePublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in
-                $0
-                ? print("お気に入り追加しました。")
-                : print("お気に入り追加済みです。");
                 let alert = UIAlertController(title: "お気に入りに追加しました。", message: "", preferredStyle: .alert)
                 self?.present(alert, animated: true, completion: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                         alert.dismiss(animated: true, completion: nil)
                     }
                 })
-                self?.tableView.reloadData()
             }
             .store(in: &subscriptions)
         viewModel.productsPublisher
             .receive(on: DispatchQueue.main)
-            .sink { products in
-                self.products = products
+            .sink { [weak self] in
+                self?.applyProductSnapshot()
+            }
+            .store(in: &subscriptions)
+        viewModel.couponsPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in
+                self?.applyCouponSnapshot()
             }
             .store(in: &subscriptions)
     }
 }
 
-extension NetShoppingViewController: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return products.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "NetShoppingCell", for: indexPath) as! NetShoppingTableViewCell
-        cell.render(viewModel: viewModel, indexPath: indexPath, product: self.products[indexPath.row])
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+extension NetShoppingViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         viewModel.didSelectRowAt(indexPath)
+    }
+}
+
+extension NetShoppingViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        if offsetY > contentHeight - scrollView.frame.size.height &&
+            contentHeight != 0 &&
+            !isLoading {
+            isLoading = true
+            Task {
+                await viewModel.didScrollToBottom()
+                isLoading = false
+            }
+        }
     }
 }
 
@@ -172,6 +257,6 @@ extension NetShoppingViewController: UISearchBarDelegate {
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        Task { await viewModel.onSearchButtonClicked(query: searchBar.text) }
+        Task { await viewModel.onSearchButtonClicked(keyword: searchBar.text) }
     }
 }
