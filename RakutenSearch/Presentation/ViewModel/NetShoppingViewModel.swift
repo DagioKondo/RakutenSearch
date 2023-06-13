@@ -13,7 +13,10 @@ protocol NetShoppingViewModelable {
     var showWebViewPublisher: AnyPublisher<URL, Never> { get }
     var isLoadingPublisher: AnyPublisher<Bool, Never> { get }
     var addToFavoritePublisher: AnyPublisher<Void, Never> { get }
-    var productsPublisher: AnyPublisher<[Product], Never> { get }
+    var productsPublisher: AnyPublisher<Void, Never> { get }
+    var couponsPublisher: AnyPublisher<Void, Never> { get }
+    var products: [Product] { get }
+    var coupons: [Coupon] { get }
     func onSearchButtonClicked(keyword: String?) async
     func didSelectRowAt(_ indexPath: IndexPath)
     func onFavoriteButtonClicked(_ indexPath: IndexPath) async
@@ -24,10 +27,13 @@ final class NetShoppingViewModel {
     private let showWebViewSubject = PassthroughSubject<URL, Never>()
     private let isLoadingSubject = PassthroughSubject<Bool, Never>()
     private let addToFavoriteSubject = PassthroughSubject<Void, Never>()
-    private let productsSubject: CurrentValueSubject<[Product], Never> = .init([])
+    private let productsSubject = PassthroughSubject<Void, Never>()
+    private let couponsSubject = PassthroughSubject<Void, Never>()
     private let productRepository: ProductRepository = RakutenProductRepository()
     private var scrollsToBottom = 0 // 一番下までスクロールした回数をカウントするための変数
     private var query = RakutenAPIQuery()
+    var products: [Product] = []
+    var coupons: [Coupon] = []
     
     var showWebViewPublisher: AnyPublisher<URL, Never> {
         return showWebViewSubject.eraseToAnyPublisher()
@@ -41,8 +47,12 @@ final class NetShoppingViewModel {
         return addToFavoriteSubject.eraseToAnyPublisher()
     }
     
-    var productsPublisher: AnyPublisher<[Product], Never> {
+    var productsPublisher: AnyPublisher<Void, Never> {
         return productsSubject.eraseToAnyPublisher()
+    }
+    
+    var couponsPublisher: AnyPublisher<Void, Never> {
+        return couponsSubject.eraseToAnyPublisher()
     }
 }
 
@@ -51,13 +61,12 @@ extension NetShoppingViewModel: NetShoppingViewModelable {
         do {
             isLoadingSubject.send(true)
             guard let keyword = keyword else { return isLoadingSubject.send(false) }
-            self.productsSubject.value = []
-            query.keyword = keyword
-            query.page = "1"
-            scrollsToBottom = 1
-            // ランキングAPIを叩く想定で並列処理にしている
-            async let products = productRepository.fetchProduct(query: query)
-            self.productsSubject.value = try await products
+            async let coupons = fetchCoupons()
+            async let products = fetchProducts(keyword: keyword)
+            self.coupons = try await coupons
+            self.products = try await products
+            couponsSubject.send()
+            productsSubject.send()
             isLoadingSubject.send(false)
         } catch {
             guard let error = error as? RakutenAPIError else { return }
@@ -67,7 +76,7 @@ extension NetShoppingViewModel: NetShoppingViewModelable {
     }
     
     func didSelectRowAt(_ indexPath: IndexPath) {
-        let itemUrl = productsSubject.value[indexPath.row].item.urlString
+        let itemUrl = products[indexPath.row].item.urlString
         guard let url = URL(string: itemUrl) else { return }
         showWebViewSubject.send(url)
     }
@@ -76,8 +85,9 @@ extension NetShoppingViewModel: NetShoppingViewModelable {
         do {
             scrollsToBottom += 1
             query.page = String(scrollsToBottom)
-            let productsToAdd = try await productRepository.fetchProduct(query: query)
-            self.productsSubject.value.append(contentsOf: productsToAdd)
+            let productsToAdd = try await productRepository.fetchProducts(query: query)
+            products.append(contentsOf: productsToAdd)
+            productsSubject.send()
         } catch {
             print(error)
         }
@@ -85,12 +95,23 @@ extension NetShoppingViewModel: NetShoppingViewModelable {
     
     func onFavoriteButtonClicked(_ indexPath: IndexPath) async {
         do {
-            let favoriteProduct = productsSubject.value[indexPath.row]
+            let favoriteProduct = products[indexPath.row]
             try await CoreDataFavoriteProductRepository.shared.insertFavoriteProduct(into: favoriteProduct)
             addToFavoriteSubject.send()
         } catch {
             fatalError()
         }
-        
+    }
+    
+    private func fetchProducts(keyword: String) async throws -> [Product] {
+        products = []
+        query.keyword = keyword
+        query.page = "1"
+        scrollsToBottom = 1
+        return try await productRepository.fetchProducts(query: query)
+    }
+    
+    private func fetchCoupons() async throws -> [Coupon] {
+        return try await productRepository.fetchCoupons()
     }
 }

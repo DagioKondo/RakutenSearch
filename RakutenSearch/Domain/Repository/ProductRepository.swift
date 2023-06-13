@@ -10,5 +10,6 @@ import Combine
 
 // 商品を取得するリポジトリインターフェース
 protocol ProductRepository {
-    func fetchProduct(query: RakutenAPIQuery) async throws -> [Product]
+    func fetchProducts(query: RakutenAPIQuery) async throws -> [Product]
+    func fetchCoupons() async throws -> [Coupon]
 }

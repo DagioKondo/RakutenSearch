@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class NetShoppingCell: UITableViewCell {
+final class NetShoppingCell: UICollectionViewCell {
     static let reuseIdentifier = "NetShoppingCell"
     private let productImageView: UIImageView = {
         let view = UIImageView()
@@ -103,21 +103,17 @@ final class NetShoppingCell: UITableViewCell {
     private var viewModel: NetShoppingViewModelable?
     private var indexPath: IndexPath?
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         favoriteButton.addTarget(self, action: #selector(onFavoriteButtonClicked(_:)), for: .touchUpInside)
-        setup()
+        configure()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-    }
-    
-    private func setup() {
+    private func configure() {
         self.contentView.addSubview(containerHorizontalStackView)
 
         containerHorizontalStackView.addArrangedSubview(productImageVerticalStackView)

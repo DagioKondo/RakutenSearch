@@ -28,12 +28,6 @@ final class FavoritesViewController: UIViewController {
         return indicator
     }()
     
-    private var favoriteProducts = [FavProduct]() {
-        didSet {
-            tableView.reloadData()
-        }
-    }
-    
     private let viewModel: FavoritesViewModelable = FavoritesViewModel()
     private var subscriptions = Set<AnyCancellable>()
     
@@ -106,25 +100,12 @@ final class FavoritesViewController: UIViewController {
                 self?.indicator.isHidden = !$0
             }
             .store(in: &subscriptions)
-//        viewModel.addToFavoritePublisher
-//            .receive(on: DispatchQueue.main)
-//            .sink { [weak self] in
-//                $0
-//                ? print("お気に入り追加しました。")
-//                : print("お気に入り追加済みです。");
-//                let alert = UIAlertController(title: "お気に入りに追加しました。", message: "", preferredStyle: .alert)
-//                self?.present(alert, animated: true, completion: {
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-//                        alert.dismiss(animated: true, completion: nil)
-//                    }
-//                })
-//                self?.tableView.reloadData()
-//            }
-//            .store(in: &subscriptions)
+
         viewModel.favoriteProductsPublisher
             .receive(on: DispatchQueue.main)
-            .sink { favProducts in
-                self.favoriteProducts = favProducts
+            .sink { [weak self] in
+                self?.tableView.reloadData()
+                
             }
             .store(in: &subscriptions)
     }
@@ -132,12 +113,12 @@ final class FavoritesViewController: UIViewController {
 
 extension FavoritesViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return favoriteProducts.count
+        return viewModel.favoriteProducts.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: FavoritesCell.reuseIdentifier, for: indexPath) as! FavoritesCell
-        cell.render(viewModel: viewModel, indexPath: indexPath, product: favoriteProducts[indexPath.row])
+        cell.render(viewModel: viewModel, indexPath: indexPath, product: viewModel.favoriteProducts[indexPath.row])
         return cell
     }
     

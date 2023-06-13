@@ -12,8 +12,8 @@ import Combine
 protocol FavoritesViewModelable {
     var showWebViewPublisher: AnyPublisher<URL, Never> { get }
     var isLoadingPublisher: AnyPublisher<Bool, Never> { get }
-//    var addToFavoritePublisher: AnyPublisher<Bool, Never> { get }
-    var favoriteProductsPublisher: AnyPublisher<[FavProduct], Never> { get }
+    var favoriteProductsPublisher: AnyPublisher<Void, Never> { get }
+    var favoriteProducts: [FavProduct] { get }
     func willAppear() async
     func didSelectRowAt(_ indexPath: IndexPath)
     func deleteProduct(_ indexPath: IndexPath) async
@@ -22,8 +22,8 @@ protocol FavoritesViewModelable {
 final class FavoritesViewModel {
     private let showWebViewSubject = PassthroughSubject<URL, Never>()
     private let isLoadingSubject = PassthroughSubject<Bool, Never>()
-//    private let addToFavoriteSubject = PassthroughSubject<Bool, Never>()
-    private let favoriteProductsSubject: CurrentValueSubject<[FavProduct], Never> = .init([])
+    private let favoriteProductsSubject = PassthroughSubject<Void, Never>()
+    var favoriteProducts: [FavProduct] = []
     
     var showWebViewPublisher: AnyPublisher<URL, Never> {
         return showWebViewSubject.eraseToAnyPublisher()
@@ -33,12 +33,7 @@ final class FavoritesViewModel {
         return isLoadingSubject.eraseToAnyPublisher()
     }
     
-//    var addToFavoritePublisher: AnyPublisher<Bool, Never> {
-//        return addToFavoriteSubject.eraseToAnyPublisher()
-//    }
-//
-    
-    var favoriteProductsPublisher: AnyPublisher<[FavProduct], Never> {
+    var favoriteProductsPublisher: AnyPublisher<Void, Never> {
         return favoriteProductsSubject.eraseToAnyPublisher()
     }
 }
@@ -47,11 +42,8 @@ extension FavoritesViewModel: FavoritesViewModelable {
     func willAppear() async {
         do {
             isLoadingSubject.send(true)
-            favoriteProductsSubject.value = try await CoreDataFavoriteProductRepository.shared.getFavProducts()
-            print(favoriteProductsSubject.value.forEach({ FavProduct in
-                print(FavProduct.name)
-                print(FavProduct.itemCode)
-            }))
+            favoriteProducts = try await CoreDataFavoriteProductRepository.shared.getFavProducts()
+            favoriteProductsSubject.send()
             isLoadingSubject.send(false)
         } catch {
             guard let error = error as? RakutenAPIError else { return }
@@ -61,17 +53,17 @@ extension FavoritesViewModel: FavoritesViewModelable {
     }
     
     func didSelectRowAt(_ indexPath: IndexPath) {
-        guard let itemUrl = favoriteProductsSubject.value[indexPath.row].urlString,
+        guard let itemUrl = favoriteProducts[indexPath.row].urlString,
         let url = URL(string: itemUrl) else { return }
         showWebViewSubject.send(url)
     }
     
     func deleteProduct(_ indexPath: IndexPath) async {
-        print(favoriteProductsSubject.value[indexPath.row].itemCode)
         do {
-            guard let itemCode = favoriteProductsSubject.value[indexPath.row].itemCode else { return }
-            favoriteProductsSubject.value.remove(at: indexPath.row)
+            guard let itemCode = favoriteProducts[indexPath.row].itemCode else { return }
+            favoriteProducts.remove(at: indexPath.row)
             try await CoreDataFavoriteProductRepository.shared.delete(id: itemCode)
+            favoriteProductsSubject.send()
         } catch {
             print(error)
         }
